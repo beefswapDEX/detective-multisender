@@ -1,0 +1,32 @@
+<header class="header">
+  <div class="header__container">
+    <div class="header__left">
+      <div class="icon-container">
+        <img src="assets/images/header/logo.png" alt="Logo">
+        <span class="title">Detective MultiSender</span>
+      </div>
+    </div>
+    <div class="header__right">
+      <select [ngModel]="selectedOption" (ngModelChange)="navigateTo($event)" class="form-select selector" aria-label="Default select example">
+        <option selected value="token">Token MultiSender</option>
+        <option value="nft">NFT MultiSender</option>
+      </select>
+      <select class="form-select selector" aria-label="Default select example">
+        <option selected value="1">Ethereum Mainnet</option>
+        <option value="2">BSC Mainnet</option>
+      </select>
+      <button class="btn connect-wallet">Connect Wallet</button>
+    </div>
+  </div>
+  <div class="header__content">
+    <div class="title">
+      <span>Welcome to Detective Token MultiSender</span>
+    </div>
+    <div class="header__content__icon-container">
+      <div class="icon__item" *ngFor="let item of networkListData">
+        <img [src]="item.imagePath" alt="{{item.name}} Icon">
+        <span>{{item.name}}</span>
+      </div>
+    </div>
+  </div>
+</header>
