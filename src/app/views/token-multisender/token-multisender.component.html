@@ -1,3 +1,39 @@
 <div class="main">
-  <p class="font-bold text-red-500">Hello world</p>
+  <section class="step-section">
+    <div class="step-container">
+      <div [ngClass]="step == 1 ? 'active' : '' " class="step active">
+        <div class="rounded">
+          <span class="step-counter">1</span>
+        </div>
+        <span class="step-title">Prepare</span>
+      </div>
+      <div [ngClass]="step >= 2 ? 'active' : '' " class="progressbar">BAR</div>
+      <div [ngClass]="step >= 2 ? 'active' : '' " class="step">
+        <div class="rounded">
+          <span class="step-counter">2</span>
+        </div>
+        <span class="step-title">Confirm</span>
+      </div>
+      <div [ngClass]="step >= 3 ? 'active' : '' " class="progressbar">BAR</div>
+      <div [ngClass]="step >= 3 ? 'active' : '' " class="step">
+        <div class="rounded">
+          <span class="step-counter">3</span>
+        </div>
+        <span class="step-title">Send</span>
+      </div>
+    </div>
+  </section>
+  <form >
+    <!-- <div class="token-field">
+      <div class="token-field__label">
+
+      </div>
+      <label for="token-address">Token: </label>
+      <input id="token-address" type="text" formControlName="tokenAddress" required>
+    </div> -->
+
+    <label for="last-name">Last Name: </label>
+    <input id="last-name" type="text" formControlName="lastName">
+  </form>
+  <button type="button" class="text-white bg-blue-400 dark:bg-blue-500 cursor-not-allowed font-medium rounded-lg text-sm px-5 py-2.5 text-center" disabled>Disabled button</button>
 </div>

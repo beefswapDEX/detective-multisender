@@ -1,8 +1,101 @@
 .main {
+  padding: 25px;
   display: flex;
   align-items: center;
   flex-direction: column;
 }
 ul {
   list-style-type: none;
+}
+
+.step-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50vw;
+}
+.step-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+  width: 448px;
+  .step {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+    min-width: 60px;
+    .rounded {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      position: relative;
+      border: 2px solid #B6BCBF;
+      border-radius: 50%;
+      background: white;
+      background-clip: padding-box;
+      text-align: center;
+      .step-counter {
+        font-size: 20px;
+        font-weight: 600;
+        color: #B6BCBF;
+      }
+    }
+    .step-title {
+      text-align: center;
+      font-weight: 500;
+      font-size: 16px;
+      color: #B6BCBF;
+    }
+
+    &.active {
+      .rounded {
+        border: 2px solid transparent;
+        .step-counter {
+          color: unset;
+          background: linear-gradient(180deg, #033251 0%, rgba(3, 50, 81, 0.68) 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+      }
+      .rounded::after {
+        position: absolute;
+        top: -3px; bottom: -3px;
+        left: -3px; right: -3px;
+        background: linear-gradient(180deg, #033251 0%, rgba(3, 50, 81, 0.68) 100%);
+        content: '';
+        z-index: -1;
+        border-radius: 50%;
+      }
+      .step-title {
+        color: unset;
+        background: linear-gradient(180deg, #033251 0%, rgba(3, 50, 81, 0.68) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+    }
+  }
+  .progressbar {
+    border-radius: 1px;
+    color: transparent;
+    width: 100%;
+    height: 2px;
+    background: #B6BCBF;
+    margin-bottom: 5%;
+
+    &.active {
+      background: linear-gradient(180deg, #033251 0%, rgba(3, 50, 81, 0.68) 100%);
+    }
+  }
+}
+
+.next-button {
+  background: linear-gradient(180deg, #033251 0%, rgba(3, 50, 81, 0.68) 100%);
+}
+.next-button:hover {
+  opacity: 70%;
 }
