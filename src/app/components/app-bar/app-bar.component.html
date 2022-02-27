@@ -1,6 +1,6 @@
 <div class="px-10 py-3">
     <div class="flex items-center justify-between">
-        <a routerLink="/" class="flex items-center gap-2 hover:opacity-90">
+        <a routerLink="token" class="flex items-center gap-2 cursor-pointer select-none hover:opacity-90">
             <img src="assets/images/header/logo.png" alt="Logo" class="h-9 w-9">
             <p class="text-white">Detective MultiSender</p>
         </a>
@@ -13,7 +13,7 @@
             
             <section class="relative">
                 <button 
-                    class="flex items-center gap-2 bg-multisender-green py-2 px-3 rounded-full shadow-md hover:opacity-90"
+                    class="flex items-center gap-2 bg-multisender-green py-2 px-3 rounded-full shadow-md select-none hover:opacity-90"
                     (click)="toggleNavOption()"
                 >
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -25,13 +25,13 @@
 
                 <div 
                     *ngIf="showNavOption" 
-                    class="absolute top-10 bg-container rounded-md w-full shadow-md flex flex-col gap-1 overflow-hidden"
+                    class="absolute top-10 bg-container rounded-md w-full shadow-md flex flex-col gap-1 overflow-hidden p-1"
                     (click)="toggleNavOption()"
                 >
                     <a 
                         *ngFor="let item of navItem" 
                         [routerLink]="item.path" 
-                        class="flex items-center justify-start gap-2 p-4 hover:opacity-90"
+                        class="flex items-center justify-start gap-2 p-4 select-none hover:opacity-90"
                     >
                         <img [src]="item.icon" alt="Icon nav">
                         <p class="text-white">{{ item.name }}</p>
@@ -40,7 +40,7 @@
             </section>
         
             <section>
-                <button class="flex items-center justify-center gap-2 bg-multisender-blue py-2 px-3 rounded-full shadow-md hover:opacity-90">
+                <button class="flex items-center justify-center gap-2 bg-multisender-blue py-2 px-3 rounded-full shadow-md select-none hover:opacity-90">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 24C18.6274 24 24 18.6274 24 12C24 5.37258 18.6274 0 12 0C5.37258 0 0 5.37258 0 12C0 18.6274 5.37258 24 12 24Z" fill="#627EEA"/>
                     <path d="M12.3735 3V9.65249L17.9963 12.165L12.3735 3Z" fill="white" fill-opacity="0.602"/>
@@ -56,7 +56,7 @@
             </section>
         
             <section>
-                <button class="flex items-center justify-center gap-2 bg-white py-2 px-3 rounded-full shadow-md hover:opacity-90">
+                <button class="flex items-center justify-center gap-2 bg-white py-2 px-3 rounded-full shadow-md select-none hover:opacity-90">
                     <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M21.5 18V19C21.5 19.5304 21.2893 20.0391 20.9142 20.4142C20.5391 20.7893 20.0304 21 19.5 21H5.5C4.96957 21 4.46086 20.7893 4.08579 20.4142C3.71071 20.0391 3.5 19.5304 3.5 19V5C3.5 4.46957 3.71071 3.96086 4.08579 3.58579C4.46086 3.21071 4.96957 3 5.5 3H19.5C20.0304 3 20.5391 3.21071 20.9142 3.58579C21.2893 3.96086 21.5 4.46957 21.5 5V6H12.5C11.9696 6 11.4609 6.21071 11.0858 6.58579C10.7107 6.96086 10.5 7.46957 10.5 8V16C10.5 16.5304 10.7107 17.0391 11.0858 17.4142C11.4609 17.7893 11.9696 18 12.5 18H21.5ZM12.5 16H22.5V8H12.5V16ZM16.5 13.5C16.1022 13.5 15.7206 13.342 15.4393 13.0607C15.158 12.7794 15 12.3978 15 12C15 11.6022 15.158 11.2206 15.4393 10.9393C15.7206 10.658 16.1022 10.5 16.5 10.5C16.8978 10.5 17.2794 10.658 17.5607 10.9393C17.842 11.2206 18 11.6022 18 12C18 12.3978 17.842 12.7794 17.5607 13.0607C17.2794 13.342 16.8978 13.5 16.5 13.5Z" fill="url(#paint0_linear_137_913)"/>
                     <defs>
