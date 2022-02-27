@@ -4,6 +4,15 @@ $multisender-linear-gradient-blue-color: linear-gradient(180deg, #033251 0%, rgb
 ul {
   list-style-type: none;
 }
+
+// Main
+.main {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+// Step indicator
 .step-section {
   display: flex;
   align-items: center;
