@@ -240,3 +240,22 @@ ul {
   }
 }
 
+// Step navigation 
+.nav-container {
+  margin-top: 26px;
+  width: 50vw;
+  display: flex;
+  justify-content: space-between;
+  // align-items: center;
+  .btn-nav {
+    min-width: 80px;
+    background: linear-gradient(180deg, #033251 0%, rgba(3, 50, 81, 0.68) 100%);
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    &:disabled {
+      background: gray;
+      cursor: not-allowed;
+    }
+  }
+}
