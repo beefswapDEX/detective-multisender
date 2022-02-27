@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+
 
 @Component({
   selector: 'app-nft-multisender',
@@ -7,8 +9,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NftMultisenderComponent implements OnInit {
   step = 1;
-
-  constructor() { }
+  preparationData: FormGroup
+  
+  constructor() {
+    this.preparationData = new FormGroup({
+      token: new FormControl(null, [Validators.required]),
+      receiverWithAmount: new FormControl(null, [Validators.required])
+    })
+  }
 
   ngOnInit(): void {
   }
