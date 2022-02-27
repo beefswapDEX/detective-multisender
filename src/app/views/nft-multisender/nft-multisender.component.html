@@ -1,6 +1,6 @@
 <app-multisender-hero></app-multisender-hero>
 
-<div class="px-10 pt-7 pb-5">
+<div class="main px-10 pt-7 pb-5">
     <!-- Step indicator -->
     <section class="step-section">
         <div class="step-container">
@@ -105,4 +105,10 @@
     </form>
     <!-- End form group -->
 
+    <!-- Step navigation -->
+    <div class="nav-container">
+      <button *ngIf="step > 1" type="button" class="btn-nav" (click)="navigateStep(step-1)">Previous</button>
+      <button type="submit" class="btn-nav" [disabled]="preparationData.invalid" (click)="navigateStep(step+1)">Next</button>
+    </div>
+    <!-- End step navigation -->
 </div>
