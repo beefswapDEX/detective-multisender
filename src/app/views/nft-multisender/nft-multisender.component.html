@@ -1,5 +1,30 @@
 <app-multisender-hero></app-multisender-hero>
 
-<section class="px-10 pt-7 pb-5">
-    <p>Token Multisender Page</p>
-</section>
+<div class="px-10 pt-7 pb-5">
+    <!-- Step indicator -->
+    <section class="step-section">
+        <div class="step-container">
+          <div [ngClass]="step == 1 ? 'active' : '' " class="step active">
+            <div class="rounded">
+              <span class="step-counter">1</span>
+            </div>
+            <span class="step-title">Prepare</span>
+          </div>
+          <div [ngClass]="step >= 2 ? 'active' : '' " class="progressbar">BAR</div>
+          <div [ngClass]="step >= 2 ? 'active' : '' " class="step">
+            <div class="rounded">
+              <span class="step-counter">2</span>
+            </div>
+            <span class="step-title">Confirm</span>
+          </div>
+          <div [ngClass]="step >= 3 ? 'active' : '' " class="progressbar">BAR</div>
+          <div [ngClass]="step >= 3 ? 'active' : '' " class="step">
+            <div class="rounded">
+              <span class="step-counter">3</span>
+            </div>
+            <span class="step-title">Send</span>
+          </div>
+        </div>
+      </section>
+    <!-- End step indicator -->
+</div>
