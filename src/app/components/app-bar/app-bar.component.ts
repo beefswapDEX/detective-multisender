@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router'
 
 @Component({
   selector: 'app-bar',
@@ -22,11 +21,24 @@ export class AppBarComponent implements OnInit {
     }
   ]
 
-  constructor(
-    private router: Router
-  ) { }
+  constructor() { 
+  }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    window.addEventListener('scroll', this.showAppBar)
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('scroll', this.showAppBar)
+  }
+
+  showAppBar(): void {
+    if(document.body.scrollTop > 10 || document.documentElement.scrollTop > 10) {
+      document.querySelector('app-bar')?.classList.add('bg-multisender-blue-dark', 'shadow-md')
+    } else {
+      document.querySelector('app-bar')?.classList.remove('bg-multisender-blue-dark', 'shadow-md')
+    }
+  }
 
   toggleNavOption(): void {
     this.showNavOption = !this.showNavOption
