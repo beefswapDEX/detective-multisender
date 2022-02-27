@@ -1,6 +1,6 @@
 <app-multisender-hero></app-multisender-hero>
 
-<div class="main">
+<div class="main px-10 pt-7 pb-5">
   <section class="step-section">
     <div class="step-container">
       <div [ngClass]="step == 1 ? 'active' : '' " class="step active">
@@ -82,6 +82,7 @@
               transition
               ease-in-out
               m-0
+              resize-none
             "
             formControlName="receiverWithAmount"
             rows="9"
