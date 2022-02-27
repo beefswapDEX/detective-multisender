@@ -4,7 +4,7 @@ import { TokenMultisenderComponent } from '../views/token-multisender/token-mult
 import { MainComponent } from './main/main.component';
 
 export const MainpageModuleRoutes: Routes = [
-  { path: '',   redirectTo: '/token', pathMatch: 'full' },
+  { path: '',   redirectTo: 'token', pathMatch: 'full' },
   {
     path: '',
     component: MainComponent,
