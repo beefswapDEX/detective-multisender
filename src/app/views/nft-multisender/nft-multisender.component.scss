@@ -1,5 +1,9 @@
 $multisender-linear-gradient-blue-color: linear-gradient(180deg, #033251 0%, rgba(3, 50, 81, 0.68) 100%);
 
+// Custom default style
+ul {
+  list-style-type: none;
+}
 .step-section {
   display: flex;
   align-items: center;
