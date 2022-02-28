@@ -6,7 +6,8 @@ module.exports = {
         'multisender-green': '#26DC59',
         'multisender-blue': 'rgba(98, 126, 234, 0.51)',
         'multisender-blue-dark': '#033251',
-        'multisender-pink': '#E8464E'
+        'multisender-pink': '#E8464E',
+        'multisender-modal': 'rgba(0, 0, 0, 0.2)'
       }
     },
   },

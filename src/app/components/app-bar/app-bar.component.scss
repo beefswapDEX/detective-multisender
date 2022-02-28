@@ -1,3 +1,28 @@
+$multisender-blue-linear-color: linear-gradient(180deg, #033251 0%, #48697E 100%);
+
 .bg-container {
-    background: linear-gradient(180deg, #033251 0%, #48697E 100%);
+    background: $multisender-blue-linear-color;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey; 
+    background: #f1f1f1;
+    border-radius: 10px; 
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
 }
