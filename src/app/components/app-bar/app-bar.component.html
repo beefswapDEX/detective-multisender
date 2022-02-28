@@ -96,6 +96,7 @@
                             <button 
                                 *ngFor="let wallet of connectWalletOptions"
                                 class="flex flex-col items-center justify-center hover:opacity-90"
+                                (click)="connectMetamask()"
                             >
                                 <img [src]="wallet.icon" alt="Wallet icon">
                                 <p class="text-white mt-1">{{ wallet.name }}</p>

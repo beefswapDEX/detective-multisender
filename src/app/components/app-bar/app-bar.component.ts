@@ -4,6 +4,7 @@ import {
 } from '@angular/core';
 
 import { Router } from '@angular/router';
+import { Web3Service } from 'src/app/shared/web3-service/web3.service';
 
 @Component({
   selector: 'app-bar',
@@ -76,7 +77,8 @@ export class AppBarComponent implements OnInit {
   ]
 
   constructor(
-    private router: Router
+    private router: Router,
+    private web3Service: Web3Service
   ) { 
   }
 
@@ -116,5 +118,8 @@ export class AppBarComponent implements OnInit {
     } else {
       document.body.style.overflow = 'unset';
     }
+  }
+  connectMetamask() {
+    this.web3Service.connectAccount()
   }
 }
