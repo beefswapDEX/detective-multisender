@@ -3,6 +3,8 @@ import {
   OnInit
 } from '@angular/core';
 
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-bar',
   templateUrl: './app-bar.component.html',
@@ -12,6 +14,7 @@ export class AppBarComponent implements OnInit {
   showNavOption: boolean = false;
   showNetworkOption: boolean = false;
   showModalConnectWallet: boolean = false;
+  currentRoute: any = '';
 
   navItem = [
     {
@@ -72,11 +75,18 @@ export class AppBarComponent implements OnInit {
     }
   ]
 
-  constructor() { 
+  constructor(
+    private router: Router
+  ) { 
   }
 
   ngOnInit(): void {
     window.addEventListener('scroll', this.showAppBar);
+    console.log('on init')
+  }
+
+  ngDoCheck(): void {
+    this.currentRoute = this.router.url
   }
 
   ngOnDestroy(): void {
