@@ -65,18 +65,35 @@
             </section>
         
             <section>
-                <button class="flex items-center justify-center gap-2 bg-white py-2 px-3 rounded-full shadow-md select-none hover:opacity-90">
-                    <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M21.5 18V19C21.5 19.5304 21.2893 20.0391 20.9142 20.4142C20.5391 20.7893 20.0304 21 19.5 21H5.5C4.96957 21 4.46086 20.7893 4.08579 20.4142C3.71071 20.0391 3.5 19.5304 3.5 19V5C3.5 4.46957 3.71071 3.96086 4.08579 3.58579C4.46086 3.21071 4.96957 3 5.5 3H19.5C20.0304 3 20.5391 3.21071 20.9142 3.58579C21.2893 3.96086 21.5 4.46957 21.5 5V6H12.5C11.9696 6 11.4609 6.21071 11.0858 6.58579C10.7107 6.96086 10.5 7.46957 10.5 8V16C10.5 16.5304 10.7107 17.0391 11.0858 17.4142C11.4609 17.7893 11.9696 18 12.5 18H21.5ZM12.5 16H22.5V8H12.5V16ZM16.5 13.5C16.1022 13.5 15.7206 13.342 15.4393 13.0607C15.158 12.7794 15 12.3978 15 12C15 11.6022 15.158 11.2206 15.4393 10.9393C15.7206 10.658 16.1022 10.5 16.5 10.5C16.8978 10.5 17.2794 10.658 17.5607 10.9393C17.842 11.2206 18 11.6022 18 12C18 12.3978 17.842 12.7794 17.5607 13.0607C17.2794 13.342 16.8978 13.5 16.5 13.5Z" fill="url(#paint0_linear_137_913)"/>
-                    <defs>
-                        <linearGradient id="paint0_linear_137_913" x1="3.5" y1="3" x2="25.8455" y2="9.50113" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#E8464E"/>
-                        <stop offset="1" stop-color="#E4485D" stop-opacity="0.82"/>
-                        </linearGradient>
-                    </defs>
-                    </svg>
+                <button 
+                    class="flex items-center justify-center gap-2 bg-white py-2 px-3 rounded-full shadow-md select-none hover:opacity-90"
+                    (click)="toggleModalConnectWallet()"
+                >
+                    <img src="assets/images/svg/wallet.svg" alt="Wallet icon">
                     <p class="text-multisender-pink font-bold">Connect Wallet</p>
                 </button>
+
+                <div
+                    *ngIf="showModalConnectWallet" 
+                    class="fixed top-0 left-0 w-full h-full bg-multisender-modal z-20 flex items-center justify-center"
+                    (click)="toggleModalConnectWallet()"
+                >
+                    <div class="bg-container p-5 rounded-md w-96 shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <p class="text-white text-lg font-bold">Connect Wallet</p>
+                            <button class="hover:opacity-90"><img src="assets/images/svg/close.svg" alt="Close icon"></button>
+                        </div>
+                        <div class="p-5 w-full h-full flex items-center justify-center">
+                            <button 
+                                *ngFor="let wallet of connectWalletOptions"
+                                class="flex flex-col items-center justify-center hover:opacity-90"
+                            >
+                                <img [src]="wallet.icon" alt="Wallet icon">
+                                <p class="text-white mt-1">{{ wallet.name }}</p>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </section>
         </div>
     </div>

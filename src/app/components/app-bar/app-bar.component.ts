@@ -11,6 +11,7 @@ import {
 export class AppBarComponent implements OnInit {
   showNavOption: boolean = false;
   showNetworkOption: boolean = false;
+  showModalConnectWallet: boolean = false;
 
   navItem = [
     {
@@ -64,6 +65,13 @@ export class AppBarComponent implements OnInit {
     }
   ]
 
+  connectWalletOptions = [
+    { 
+      icon: 'assets/images/svg/metamask.svg',
+      name: 'Metamask'
+    }
+  ]
+
   constructor() { 
   }
 
@@ -89,5 +97,14 @@ export class AppBarComponent implements OnInit {
 
   toggleNetworkOption(): void {
     this.showNetworkOption = !this.showNetworkOption;
+  }
+
+  toggleModalConnectWallet(): void {
+    this.showModalConnectWallet = !this.showModalConnectWallet;
+    if(this.showModalConnectWallet) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
   }
 }
