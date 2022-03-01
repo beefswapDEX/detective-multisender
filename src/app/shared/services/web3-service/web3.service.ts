@@ -8,7 +8,7 @@ import { LocalStorageService } from '../local-storage-service/local-storage.serv
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { UserTokenModel } from 'src/app/config/models/user-token.model';
-import { BIG_ZERO } from 'src/app/utils/bignumber';
+import { BIG_ZERO } from 'src/app/utils/bigNumber';
 declare let window: any;
 
 @Injectable({
