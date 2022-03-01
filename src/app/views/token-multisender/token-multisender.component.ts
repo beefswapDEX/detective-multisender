@@ -5,7 +5,7 @@ import { UserTokenModel } from 'src/app/config/models/user-token.model';
 import { LocalStorageService } from 'src/app/shared/services/local-storage-service/local-storage.service';
 import { Web3Service } from 'src/app/shared/services/web3-service/web3.service';
 import { CustomValidators } from 'src/app/shared/validators/custom-validators';
-import { BIG_ZERO } from 'src/app/utils/bignumber';
+import { BIG_ZERO } from 'src/app/utils/bigNumber';
 
 @Component({
   selector: 'app-token-multisender',
