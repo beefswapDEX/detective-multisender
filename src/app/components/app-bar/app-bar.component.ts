@@ -4,7 +4,7 @@ import {
 } from '@angular/core';
 
 import { Router } from '@angular/router';
-import { Web3Service } from 'src/app/shared/web3-service/web3.service';
+import { Web3Service } from 'src/app/shared/services/web3-service/web3.service';
 
 @Component({
   selector: 'app-bar',
@@ -84,7 +84,6 @@ export class AppBarComponent implements OnInit {
 
   ngOnInit(): void {
     window.addEventListener('scroll', this.showAppBar);
-    console.log('on init')
   }
 
   ngDoCheck(): void {

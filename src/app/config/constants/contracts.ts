@@ -3,8 +3,12 @@ export default {
     97: '0x1469069401C03F67abd9f83d6CEe7Ed2cab7f25F',
     56: '0x1469069401C03F67abd9f83d6CEe7Ed2cab7f25F',
   },
-  null: {
-    97: '0xa527eda964fa843a105fbc3e007b01f145e21fdc',
-    56: '0x6ab8463a4185b80905e05a9ff80a2d6b714b9e95',
+  upgradeableProxySender: {
+    97: '0xF15b345FB9296294347b5056462ACb5D9F00ED5F',
+    56: '0xF15b345FB9296294347b5056462ACb5D9F00ED5F',
   },
+  externalStorageProxyForDetectiveMultisender: {
+    97: '0xB0764Da8FA1801dcaa57512A45Da6E213775D3DA',
+    56: '0xB0764Da8FA1801dcaa57512A45Da6E213775D3DA'
+  }
 }

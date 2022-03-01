@@ -145,6 +145,11 @@ ul {
         font-weight: 500;
       }
     }
+    .balance__container {
+      display: flex;
+      flex-grow: 1;
+      justify-content: flex-end;
+    }
   }
   .token-field__input {
     display: flex;
@@ -153,6 +158,19 @@ ul {
       position: absolute;
       right: 2%;
       bottom: 40%;
+    }
+    .autocomplete__dropdown {
+      display: block;
+      position: absolute;
+      top: 100%;
+      max-height: 200px;
+      overflow-y: auto;
+      .item {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+        white-space: nowrap;
+      }
     }
   }
   .deflationary__container {
@@ -229,6 +247,9 @@ ul {
       gap: 20px;
     }
   }
+}
+.message-container {
+  width: 50vw;
 }
 .nav-container {
   margin-top: 26px;
