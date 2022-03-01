@@ -1,23 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import Web3 from "web3";
-import { AbiItem } from 'web3-utils'
-import { CHAIN_ID } from 'src/app/config/constants/networks';
-import contracts from 'src/app/config/constants/contracts';
+import { AbiItem, Unit } from 'web3-utils'
 import keys from 'src/app/config/constants/keys';
-import bep20Abi from 'src/app/config/abi/erc20.json';
-import detectiveMultisender from 'src/app/config/abi/detectiveMultisender.json'
-
-import { MaxUint256 } from '@ethersproject/constants';
+import erc20Abi from 'src/app/config/abi/erc20.json';
 import { LocalStorageService } from '../local-storage-service/local-storage.service';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
+import { UserTokenModel } from 'src/app/config/models/user-token.model';
+import { BIG_ZERO } from 'src/app/utils/bignumber';
 declare let window: any;
-
-interface UserTokenModel {
-  label: string;
-  value: string;
-}
 
 @Injectable({
   providedIn: 'root'
@@ -84,14 +76,26 @@ export class Web3Service {
   getUserTokens(account: string) {
 		return this.httpClient.get(`${environment.covalenthq_gateway}/address/${account}/balances_v2/?format=JSON&nft=false&no-nft-fetch=true&key=${environment.covalenthq_apikey}`).subscribe((value: any) => {
       let res = value.data.items.map((data: any) => {
-        const {contract_address, contract_ticker_symbol} = data;
+        const {contract_address, contract_ticker_symbol, balance} = data;
         return {
           label: `${contract_ticker_symbol} - ${contract_address}`,
-          value: `${contract_address}`
+          value: `${contract_address}`,
+          balance: `${this.web3.utils.fromWei(balance)}`
         }
       })
       this.userTokens = res;
       this.localStorage.setItem(keys.web3service.user_tokens, this.userTokens)
     });
 	}
+
+  async getBalance(tokenAddress: string, account: string): Promise<any> {
+    try {
+      const contract = new this.web3.eth.Contract(erc20Abi as AbiItem[], tokenAddress);
+      const balance = await contract.methods.balanceOf(account).call();
+      return this.web3.utils.fromWei(this.web3.utils.toBN(balance), 'ether' as Unit);
+    } catch (error) {
+      console.log('getBalance', error)
+      return BIG_ZERO;
+    }
+  }
 }

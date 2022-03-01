@@ -33,10 +33,15 @@
           <div class="badge-network">
             <span>Contract (BSC Mainnet)</span>
           </div>
+          <div class="balance__container">
+            <span>Balance: {{balance}}</span>
+          </div>
         </div>
         <div class="token-field__input">
-          <input formControlName="token" type="text" placeholder="Select your token" 
-                  class="form-control text-field appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" id="token">
+          <input (blur)="onBlur()" (click)="onFocus()" (input)="searchToken()"
+                  [(ngModel)]="searchTokenText"
+                  formControlName="token" type="text" placeholder="Select your token"
+                  class="form-control text-field appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight">
           <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M0.292893 0.292893C0.683417 -0.0976311 1.31658 -0.0976311 1.70711 0.292893L7 5.58579L12.2929 0.292893C12.6834 -0.0976311 13.3166 -0.0976311 13.7071 0.292893C14.0976 0.683418 14.0976 1.31658 13.7071 1.70711L7.70711 7.70711C7.31658 8.09763 6.68342 8.09763 6.29289 7.70711L0.292893 1.70711C-0.0976311 1.31658 -0.0976311 0.683418 0.292893 0.292893Z" fill="url(#paint0_linear_156_247)"/>
             <defs>
@@ -45,7 +50,10 @@
             <stop offset="1" stop-color="#033251" stop-opacity="0.68"/>
             </linearGradient>
             </defs>
-          </svg>            
+          </svg>
+          <div *ngIf="openDropdown && filteredUserTokens.length >= 1" class="autocomplete__dropdown w-full border-2">
+            <a role="button" (click)="selectToken(item)" class="item w-full hover:bg-gray-200 bg-white py-2 px-3" *ngFor="let item of filteredUserTokens;">{{item.label}}</a>
+          </div>            
         </div>
       </div>
       <div class="deflationary__container">
@@ -99,6 +107,11 @@
       </div>
     </div>
   </form>
+  <div class="message-container my-2">
+    <div *ngIf="preparationData.controls.token.hasError('AddressNotValid') && preparationData.controls.token.touched" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+      <span class="block sm:inline">Please enter valid token address</span>
+    </div>
+  </div>
   <div class="nav-container">
     <button *ngIf="step > 1" type="button" class="btn-nav" (click)="navigateStep(step-1)">Previous</button>
     <button type="submit" class="btn-nav" [disabled]="preparationData.invalid" (click)="navigateStep(step+1)">Next</button>
