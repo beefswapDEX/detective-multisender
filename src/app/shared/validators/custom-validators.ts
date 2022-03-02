@@ -1,5 +1,4 @@
 import { ValidationErrors, ValidatorFn, AbstractControl } from '@angular/forms';
-import { CHAIN_ID } from 'src/app/config/constants/networks';
 import Web3 from 'web3';
 
 export class CustomValidators {
