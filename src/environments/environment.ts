@@ -2,11 +2,9 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-import { CHAIN_ID } from "src/app/config/constants/networks";
-
 export const environment = {
   production: false,
-  covalenthq_gateway: 'https://api.covalenthq.com/v1/'+CHAIN_ID,
+  covalenthq_gateway: 'https://api.covalenthq.com/v1',
   covalenthq_apikey: 'ckey_dcdc66cc368441f783b5e3beae5'
 };
 

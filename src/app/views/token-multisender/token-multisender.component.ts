@@ -31,6 +31,7 @@ export class TokenMultisenderComponent implements OnInit {
   
   ngOnInit(): void {
     this.web3Service.detectAccountChange()
+    this.web3Service.detectNetworkChange()
     this.preparationData.valueChanges.subscribe(()=> {
       if(this.preparationData.controls.token.valid) {
         this.getBalance()
@@ -58,7 +59,7 @@ export class TokenMultisenderComponent implements OnInit {
   }
 
   searchToken(): void {
-    const searchTokenData = this.web3Service.userTokens.filter((token) => 
+    const searchTokenData = this.localStorageService.getItem(keys.web3service.user_tokens).filter((token) => 
           token.label.toLocaleLowerCase().includes(this.searchTokenText.toLocaleLowerCase())
         )
     this.filteredUserTokens = searchTokenData
