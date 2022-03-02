@@ -1,5 +1,5 @@
 <div class="bg-container px-10 py-10">
-    <p class="text-center mt-40 text-white font-bold text-3xl">Welcome to Detective Token MultiSender</p>
+    <p class="text-center mt-40 text-white font-bold text-3xl">Welcome to Detective {{currentRoute === '/token' ? 'Token' : 'NFT'}} MultiSender</p>
     <div class="mt-20 flex gap-3 items-center justify-between">
         <div *ngFor="let item of networks" class="flex gap-1 items-center justify-center whitespace-nowrap">
             <img [src]="item.imagePath" alt="Network icon" class="w-5 h-5">

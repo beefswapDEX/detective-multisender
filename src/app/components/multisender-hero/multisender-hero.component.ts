@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-multisender-hero',
@@ -45,7 +46,11 @@ export class MultisenderHeroComponent implements OnInit {
       imagePath: "assets/images/networks/huobi.svg"
     },
   ]
+  currentRoute: any = '';
 
-  constructor() { }
+  constructor(private readonly router: Router) { }
+  ngDoCheck(): void {
+    this.currentRoute = this.router.url
+  }
   ngOnInit(): void { }
 }

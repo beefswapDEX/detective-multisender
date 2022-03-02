@@ -92,7 +92,8 @@ export class Web3Service {
     try {
       const contract = new this.web3.eth.Contract(erc20Abi as AbiItem[], tokenAddress);
       const balance = await contract.methods.balanceOf(account).call();
-      return this.web3.utils.fromWei(this.web3.utils.toBN(balance), 'ether' as Unit);
+      return this.web3.utils.fromWei(balance, 'ether' as Unit);
+      // return this.web3.utils.fromWei(this.web3.utils.toBN(balance), 'ether' as Unit);
     } catch (error) {
       console.log('getBalance', error)
       return BIG_ZERO;
