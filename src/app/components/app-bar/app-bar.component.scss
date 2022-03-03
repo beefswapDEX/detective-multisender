@@ -3,6 +3,12 @@ $multisender-blue-linear-color: linear-gradient(180deg, #033251 0%, #48697E 100%
 .bg-container {
     background: $multisender-blue-linear-color;
 }
+.network-button {
+  min-width: 230px;
+}
+.network-option {
+  height: 16rem;
+}
 
 /* width */
 ::-webkit-scrollbar {

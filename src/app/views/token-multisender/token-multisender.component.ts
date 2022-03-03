@@ -14,6 +14,7 @@ import { BIG_ZERO } from 'src/app/utils/bigNumber';
 })
 export class TokenMultisenderComponent implements OnInit {
   step = 1;
+  address: string | undefined;
   openDropdown: boolean = false
   preparationData: FormGroup
   filteredUserTokens: UserTokenModel[] = [];
@@ -30,6 +31,9 @@ export class TokenMultisenderComponent implements OnInit {
   }
   
   ngOnInit(): void {
+    this.web3Service.address$.subscribe((val) => {
+      this.address = val;
+    })
     this.web3Service.detectAccountChange()
     this.web3Service.detectNetworkChange()
     this.preparationData.valueChanges.subscribe(()=> {
@@ -71,7 +75,7 @@ export class TokenMultisenderComponent implements OnInit {
   }
 
   async getBalance() {
-    const balance = await this.web3Service.getBalance(this.preparationData.controls.token.value, this.localStorageService.getItem(keys.web3service.address))
+    const balance = await this.web3Service.getBalance(this.preparationData.controls.token.value, this.address)
     this.balance = balance
   }
 

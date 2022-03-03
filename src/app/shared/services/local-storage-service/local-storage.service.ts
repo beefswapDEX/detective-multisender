@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
+import { ReplaySubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LocalStorageService {
+
+  public storageChange$: ReplaySubject<{key: string, value: any}> = new ReplaySubject();
 
   constructor() { 
   }
@@ -15,6 +18,7 @@ export class LocalStorageService {
 
   setItem(key: string, value: any): void {
     localStorage.setItem(key, JSON.stringify(value));
+    this.storageChange$.next({key, value})
   }
 
   removeItem(key: string): void {

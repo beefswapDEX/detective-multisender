@@ -49,18 +49,24 @@
             </section>
         
             <section class="relative">
-                <button 
-                    class="flex items-center justify-center gap-2 bg-multisender-blue py-2 px-3 rounded-full shadow-md select-none hover:opacity-90"
+                <button
+                    *ngIf="address !== undefined"
+                    class="network-button flex items-center justify-center gap-2 bg-multisender-blue py-2 px-3 rounded-full shadow-md select-none hover:opacity-90"
                     (click)="toggleNetworkOption()"
                 >
-                    <img src="assets/images/networks/eth.svg" alt="Eth icon">
-                    <p class="text-white">Ethereum Mainnet</p>
+                    <img [src]="selectedNetwork[0]?.icon" alt="{{selectedNetwork[0]?.name}} icon">
+                    <p class="text-white">{{selectedNetwork[0]?.name}}</p>
                     <img src="assets/images/svg/arrow-down.svg" alt="Arrow down icon">
+                </button>
+                <button *ngIf="address === undefined"
+                    class="flex items-center justify-center gap-2 bg-multisender-blue py-2 px-3 rounded-full shadow-md select-none hover:opacity-90"
+                >
+                    <p class="text-white">Please Connect Wallet First</p>
                 </button>
 
                 <div
                     *ngIf="showNetworkOption"
-                    class="absolute top-10 bg-container rounded-md w-full h-40 overflow-y-auto shadow-md flex flex-col items-start gap-2 overflow-hidden p-3 z-10"
+                    class="network-option absolute top-10 bg-container rounded-md w-full overflow-y-auto shadow-md flex flex-col items-start gap-2 overflow-hidden p-3 z-10"
                     (click)="toggleNetworkOption()"
                 >
                     <button
