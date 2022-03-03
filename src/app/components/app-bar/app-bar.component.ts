@@ -4,13 +4,8 @@ import {
 } from '@angular/core';
 
 import { Router } from '@angular/router';
-import { SupportedChainId } from 'src/app/config/constants/networks';
+import { NetworkOptionModel, networkOptions } from 'src/app/config/constants/networks';
 import { Web3Service } from 'src/app/shared/services/web3-service/web3.service';
-interface NetworkModel {
-  chainId: string,
-  icon: string,
-  name: string
-}
 @Component({
   selector: 'app-bar',
   templateUrl: './app-bar.component.html',
@@ -21,8 +16,8 @@ export class AppBarComponent implements OnInit {
   showNetworkOption: boolean = false;
   showModalConnectWallet: boolean = false;
   currentRoute: any = '';
-  address: string;
-  chainId: string;
+  address: string | undefined;
+  chainId: string | undefined;
 
   navItem = [
     {
@@ -37,53 +32,7 @@ export class AppBarComponent implements OnInit {
     }
   ];
 
-  networkOptions: NetworkModel[] = [
-    {
-      chainId: SupportedChainId.ETHEREUM_MAINNET,
-      icon: 'assets/images/networks/eth.svg',
-      name: 'Ethereum Mainnet'
-    },
-    {
-      chainId:SupportedChainId.BSC_MAINNET,
-      icon: 'assets/images/networks/bsc.svg',
-      name: 'BSC Mainnet'
-    },
-    {
-      chainId: SupportedChainId.POLYGON_MAINNET,
-      icon: 'assets/images/networks/polygon.svg',
-      name: 'Polygon Mainnet'
-    },
-    {
-      chainId: SupportedChainId.SOLANA_MAINNET,
-      icon: 'assets/images/networks/solana.svg',
-      name: 'Solana Mainnet'
-    },
-    {
-      chainId: SupportedChainId.ARBITRUM_MAINNET,
-      icon: 'assets/images/networks/arbitrum.svg',
-      name: 'Arbitrum Mainnet'
-    },
-    {
-      chainId: SupportedChainId.OPTIMISM_MAINNET,
-      icon: 'assets/images/networks/optimism.svg',
-      name: 'Optimism Mainnet'
-    },
-    {
-      chainId: SupportedChainId.AVALANCHE_MAINNET,
-      icon: 'assets/images/networks/avalance.svg',
-      name: 'Avalanche Mainnet'
-    },
-    {
-      chainId: SupportedChainId.FANTOM_MAINNET,
-      icon: 'assets/images/networks/fantom.svg',
-      name: 'Fantom Mainnet'
-    },
-    {
-      chainId: SupportedChainId.OKEX_MAINNET,
-      icon: 'assets/images/networks/okex.svg',
-      name: 'Okex Chain Mainnet'
-    }
-  ]
+  networkOptions: NetworkOptionModel[] = networkOptions
 
   connectWalletOptions = [
     { 
@@ -91,7 +40,7 @@ export class AppBarComponent implements OnInit {
       name: 'Metamask'
     }
   ]
-  selectedNetwork: NetworkModel[];
+  selectedNetwork: NetworkOptionModel[] = [];
 
   constructor(
     private router: Router,
@@ -101,10 +50,10 @@ export class AppBarComponent implements OnInit {
 
   ngOnInit(): void {
     window.addEventListener('scroll', this.showAppBar);
-    this.web3Service.address$.subscribe((val: any) => {
+    this.web3Service.address$?.subscribe((val: any) => {
       this.address = val;
     })
-    this.web3Service.chainId$.subscribe((val: any) => {
+    this.web3Service.chainId$?.subscribe((val: any) => {
       this.filteringNetwork(val)
       this.chainId = val
     })
@@ -142,7 +91,7 @@ export class AppBarComponent implements OnInit {
       document.body.style.overflow = 'unset';
     }
   }
-  
+
   connectMetamask() {
     this.web3Service.connectAccount()
   }
@@ -151,5 +100,9 @@ export class AppBarComponent implements OnInit {
     this.selectedNetwork = this.networkOptions.filter((network) => {
       return network.chainId === chainId;
     });
+  }
+
+  changeNetwork(chainId: any) {
+    this.web3Service.changeNetwork(chainId)
   }
 }

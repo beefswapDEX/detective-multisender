@@ -7,7 +7,7 @@ import erc20Abi from 'src/app/config/abi/erc20.json';
 import { LocalStorageService } from '../local-storage-service/local-storage.service';
 import { environment } from 'src/environments/environment';
 import { BIG_ZERO } from 'src/app/utils/bigNumber';
-import { SupportedChainId } from 'src/app/config/constants/networks'
+import { NETWORK_CONFIG, SupportedChainId } from 'src/app/config/constants/networks'
 import { hexStripZeros } from "@ethersproject/bytes";
 import { BigNumber } from "@ethersproject/bignumber";
 import { Observable } from 'rxjs';
@@ -133,7 +133,6 @@ export class Web3Service {
    return this.web3.eth.getChainId()
   }
 
-  // wip
   async changeNetwork(chainId:any): Promise<any> {
     if (window.ethereum) {
       try {
@@ -142,20 +141,12 @@ export class Web3Service {
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: chainId }], // chainId must be in hexadecimal numbers
         });
-      } catch (error) {
+      } catch (error: any) {
         // if network is not been added to metamask, then install it into the user MetaMask
         if (error.code === 4902) {
           try {
-            await window.ethereum.request({
-              method: 'wallet_addEthereumChain',
-              params: [
-                {
-                  chainId: '0x61',
-                  rpcUrl: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
-                },
-              ],
-            });
-          } catch (addError) {
+            await window.ethereum.request(NETWORK_CONFIG[chainId]);
+          } catch (addError: any) {
             console.error(addError);
           }
         }

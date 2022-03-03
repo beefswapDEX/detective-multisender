@@ -70,6 +70,7 @@
                     (click)="toggleNetworkOption()"
                 >
                     <button
+                        (click)="changeNetwork(network.chainId)"
                         *ngFor="let network of networkOptions"
                         class="flex items-center gap-2 py-2 select-none hover:opacity-90"
                     >   

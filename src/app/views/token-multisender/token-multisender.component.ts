@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import keys from 'src/app/config/constants/keys';
+import { NetworkOptionModel, networkOptions } from 'src/app/config/constants/networks';
 import { UserTokenModel } from 'src/app/config/models/user-token.model';
 import { LocalStorageService } from 'src/app/shared/services/local-storage-service/local-storage.service';
 import { Web3Service } from 'src/app/shared/services/web3-service/web3.service';
@@ -17,6 +18,7 @@ export class TokenMultisenderComponent implements OnInit {
   address: string | undefined;
   openDropdown: boolean = false
   preparationData: FormGroup
+  selectedNetwork: NetworkOptionModel[] = [];
   filteredUserTokens: UserTokenModel[] = [];
   searchTokenText: string = "";
   balance: any = BIG_ZERO;
@@ -31,11 +33,16 @@ export class TokenMultisenderComponent implements OnInit {
   }
   
   ngOnInit(): void {
-    this.web3Service.address$.subscribe((val) => {
-      this.address = val;
-    })
     this.web3Service.detectAccountChange()
     this.web3Service.detectNetworkChange()
+    this.web3Service.address$?.subscribe((val) => {
+      this.address = val;
+    })
+    this.web3Service.chainId$?.subscribe((val) => {
+      this.selectedNetwork = networkOptions.filter((network) => {
+        return network.chainId === val;
+      });
+    })
     this.preparationData.valueChanges.subscribe(()=> {
       if(this.preparationData.controls.token.valid) {
         this.getBalance()
@@ -63,7 +70,7 @@ export class TokenMultisenderComponent implements OnInit {
   }
 
   searchToken(): void {
-    const searchTokenData = this.localStorageService.getItem(keys.web3service.user_tokens).filter((token) => 
+    const searchTokenData = this.localStorageService.getItem(keys.web3service.user_tokens).filter((token: any) => 
           token.label.toLocaleLowerCase().includes(this.searchTokenText.toLocaleLowerCase())
         )
     this.filteredUserTokens = searchTokenData
@@ -75,7 +82,7 @@ export class TokenMultisenderComponent implements OnInit {
   }
 
   async getBalance() {
-    const balance = await this.web3Service.getBalance(this.preparationData.controls.token.value, this.address)
+    const balance = await this.web3Service.getBalance(this.preparationData.controls.token.value, this.address as string)
     this.balance = balance
   }
 

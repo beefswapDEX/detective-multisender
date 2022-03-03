@@ -1,7 +1,4 @@
 export const CHAIN_ID = 97
-interface networkList {
-  [networkName: string]: any
-}
 export const ETH_MAINNET =  {
   method: "wallet_switchEthereumChain",
   params: [{ chainId: "0x1" }],
@@ -19,7 +16,7 @@ export enum SupportedChainId {
   OKEX_MAINNET = "0x42",
   HECO_MAINNET = "0x80"
 }
-export const NETWORK_INFO = {
+export const NETWORK_CONFIG = {
   [SupportedChainId.BSC_MAINNET]: {
     method: "wallet_addEthereumChain",
     params: [
@@ -68,7 +65,42 @@ export const NETWORK_INFO = {
       },
     ],
   },
+  // TODO: Find the config
   [SupportedChainId.SOLANA_MAINNET]: {
+    method: "wallet_addEthereumChain",
+    params: [
+      {
+        chainId: "0x89",
+        chainName: "Polygon Mainnet",
+        nativeCurrency: {
+          name: "Polygon",
+          symbol: "MATIC",
+          decimals: 18,
+        },
+        rpcUrls: ["https://rpc-mainnet.maticvigil.com"],
+        blockExplorerUrls: [`https://polygonscan.com/`],
+      },
+    ],
+  },
+  // TODO: Find the config
+  [SupportedChainId.ARBITRUM_MAINNET]: {
+    method: "wallet_addEthereumChain",
+    params: [
+      {
+        chainId: "0x89",
+        chainName: "Polygon Mainnet",
+        nativeCurrency: {
+          name: "Polygon",
+          symbol: "MATIC",
+          decimals: 18,
+        },
+        rpcUrls: ["https://rpc-mainnet.maticvigil.com"],
+        blockExplorerUrls: [`https://polygonscan.com/`],
+      },
+    ],
+  },
+  // TODO: Find the config
+  [SupportedChainId.OPTIMISM_MAINNET]: {
     method: "wallet_addEthereumChain",
     params: [
       {
@@ -131,3 +163,55 @@ export const NETWORK_INFO = {
     }],
   },
 }
+export interface NetworkOptionModel {
+  chainId: string,
+  icon: string,
+  name: string
+}
+export const networkOptions: NetworkOptionModel[] = [
+  {
+    chainId: SupportedChainId.ETHEREUM_MAINNET,
+    icon: 'assets/images/networks/eth.svg',
+    name: 'Ethereum Mainnet'
+  },
+  {
+    chainId:SupportedChainId.BSC_MAINNET,
+    icon: 'assets/images/networks/bsc.svg',
+    name: 'BSC Mainnet'
+  },
+  {
+    chainId: SupportedChainId.POLYGON_MAINNET,
+    icon: 'assets/images/networks/polygon.svg',
+    name: 'Polygon Mainnet'
+  },
+  {
+    chainId: SupportedChainId.SOLANA_MAINNET,
+    icon: 'assets/images/networks/solana.svg',
+    name: 'Solana Mainnet'
+  },
+  {
+    chainId: SupportedChainId.ARBITRUM_MAINNET,
+    icon: 'assets/images/networks/arbitrum.svg',
+    name: 'Arbitrum Mainnet'
+  },
+  {
+    chainId: SupportedChainId.OPTIMISM_MAINNET,
+    icon: 'assets/images/networks/optimism.svg',
+    name: 'Optimism Mainnet'
+  },
+  {
+    chainId: SupportedChainId.AVALANCHE_MAINNET,
+    icon: 'assets/images/networks/avalance.svg',
+    name: 'Avalanche Mainnet'
+  },
+  {
+    chainId: SupportedChainId.FANTOM_MAINNET,
+    icon: 'assets/images/networks/fantom.svg',
+    name: 'Fantom Mainnet'
+  },
+  {
+    chainId: SupportedChainId.OKEX_MAINNET,
+    icon: 'assets/images/networks/okex.svg',
+    name: 'Okex Chain Mainnet'
+  }
+]
