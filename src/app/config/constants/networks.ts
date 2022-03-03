@@ -1,7 +1,4 @@
 export const CHAIN_ID = 97
-interface networkList {
-  [networkName: string]: any
-}
 export const ETH_MAINNET =  {
   method: "wallet_switchEthereumChain",
   params: [{ chainId: "0x1" }],
@@ -12,19 +9,19 @@ export enum SupportedChainId {
   BSC_TESTNET = "0x61",
   POLYGON_MAINNET = "0x89",
   FANTOM_MAINNET = "0xfa",
-  SOLANA_MAINNET = "solana",
-  ARBITRUM_MAINNET = "arbitrum",
-  OPTIMISM_MAINNET = "optimism",
+  SOLANA_MAINNET = "0xe9ac0ce",
+  ARBITRUM_MAINNET = "0xa4b1",
+  OPTIMISM_MAINNET = "0xa",
   AVALANCHE_MAINNET = "0xa86a",
   OKEX_MAINNET = "0x42",
   HECO_MAINNET = "0x80"
 }
-export const NETWORK_INFO = {
+export const NETWORK_CONFIG = {
   [SupportedChainId.BSC_MAINNET]: {
     method: "wallet_addEthereumChain",
     params: [
       {
-        chainId: "0x38",
+        chainId: SupportedChainId.BSC_MAINNET,
         chainName: "BSC Mainnet",
         nativeCurrency: {
           name: "Binance Coin",
@@ -40,7 +37,7 @@ export const NETWORK_INFO = {
     method: "wallet_addEthereumChain",
     params: [
       {
-        chainId: "0x89",
+        chainId: SupportedChainId.POLYGON_MAINNET,
         chainName: "Polygon Mainnet",
         nativeCurrency: {
           name: "Polygon",
@@ -56,7 +53,7 @@ export const NETWORK_INFO = {
     method: "wallet_addEthereumChain",
     params: [
       {
-        chainId: "0xfa",
+        chainId: SupportedChainId.FANTOM_MAINNET,
         chainName: "Fantom Opera",
         nativeCurrency: {
           name: "Fantom",
@@ -68,19 +65,52 @@ export const NETWORK_INFO = {
       },
     ],
   },
+  // TODO: Confirm the config
   [SupportedChainId.SOLANA_MAINNET]: {
     method: "wallet_addEthereumChain",
     params: [
       {
-        chainId: "0x89",
-        chainName: "Polygon Mainnet",
+        chainId: SupportedChainId.SOLANA_MAINNET,
+        chainName: "Neon EVM DevNet",
         nativeCurrency: {
-          name: "Polygon",
-          symbol: "MATIC",
+          name: "Neon",
+          symbol: "NEON",
           decimals: 18,
         },
-        rpcUrls: ["https://rpc-mainnet.maticvigil.com"],
-        blockExplorerUrls: [`https://polygonscan.com/`],
+        rpcUrls: ["https://proxy.devnet.neonlabs.org/solana"],
+        blockExplorerUrls: [`https://neon-labs.org/`],
+      },
+    ],
+  },
+  [SupportedChainId.ARBITRUM_MAINNET]: {
+    method: "wallet_addEthereumChain",
+    params: [
+      {
+        chainId: SupportedChainId.ARBITRUM_MAINNET,
+        chainName: "Arbitrum Mainnet",
+        nativeCurrency: {
+          name: 'ETH',
+          symbol: 'ETH',
+          decimals: 18,
+        },
+        rpcUrls: ["https://arb1.arbitrum.io/rpc"],
+        blockExplorerUrls: [`https://arbiscan.io`],
+      },
+    ],
+  },
+  [SupportedChainId.OPTIMISM_MAINNET]: {
+    method: "wallet_addEthereumChain",
+    params: [
+      {
+        chainId: SupportedChainId.OPTIMISM_MAINNET,
+        chainName: "Optimistic Ethereum Mainnet",
+        nativeCurrency: {
+          name: 'ETH',
+          symbol: 'ETH',
+          decimals: 18,
+        },
+        rpcUrls: ["https://mainnet.optimism.io"],
+        blockExplorerUrls: [`https://optimistic.etherscan.io`],
       },
     ],
   },
@@ -88,7 +118,7 @@ export const NETWORK_INFO = {
     method: "wallet_addEthereumChain",
     params: [
       {
-        chainId: "0xa86a",
+        chainId: SupportedChainId.AVALANCHE_MAINNET,
         chainName: "Avalanche C-Chain",
         nativeCurrency: {
           name: "Avalanache",
@@ -104,7 +134,7 @@ export const NETWORK_INFO = {
     method: "wallet_addEthereumChain",
     params: [
       {
-        chainId: "0x42",
+        chainId: SupportedChainId.OKEX_MAINNET,
         chainName: "OKExChain Mainnet",
         nativeCurrency: {
           name: "OKT",
@@ -119,7 +149,7 @@ export const NETWORK_INFO = {
   [SupportedChainId.HECO_MAINNET]: {
     method: "wallet_addEthereumChain",
     params: [{
-      chainId: "0x80",
+      chainId: SupportedChainId.HECO_MAINNET,
       chainName: "HECO MAINNET",
       nativeCurrency: {
         name: "HECO",
@@ -131,3 +161,55 @@ export const NETWORK_INFO = {
     }],
   },
 }
+export interface NetworkOptionModel {
+  chainId: string,
+  icon: string,
+  name: string
+}
+export const networkOptions: NetworkOptionModel[] = [
+  {
+    chainId: SupportedChainId.ETHEREUM_MAINNET,
+    icon: 'assets/images/networks/eth.svg',
+    name: 'Ethereum Mainnet'
+  },
+  {
+    chainId:SupportedChainId.BSC_MAINNET,
+    icon: 'assets/images/networks/bsc.svg',
+    name: 'BSC Mainnet'
+  },
+  {
+    chainId: SupportedChainId.POLYGON_MAINNET,
+    icon: 'assets/images/networks/polygon.svg',
+    name: 'Polygon Mainnet'
+  },
+  {
+    chainId: SupportedChainId.SOLANA_MAINNET,
+    icon: 'assets/images/networks/solana.svg',
+    name: 'Solana Mainnet'
+  },
+  {
+    chainId: SupportedChainId.ARBITRUM_MAINNET,
+    icon: 'assets/images/networks/arbitrum.svg',
+    name: 'Arbitrum Mainnet'
+  },
+  {
+    chainId: SupportedChainId.OPTIMISM_MAINNET,
+    icon: 'assets/images/networks/optimism.svg',
+    name: 'Optimism Mainnet'
+  },
+  {
+    chainId: SupportedChainId.AVALANCHE_MAINNET,
+    icon: 'assets/images/networks/avalance.svg',
+    name: 'Avalanche Mainnet'
+  },
+  {
+    chainId: SupportedChainId.FANTOM_MAINNET,
+    icon: 'assets/images/networks/fantom.svg',
+    name: 'Fantom Mainnet'
+  },
+  {
+    chainId: SupportedChainId.OKEX_MAINNET,
+    icon: 'assets/images/networks/okex.svg',
+    name: 'Okex Chain Mainnet'
+  }
+]
