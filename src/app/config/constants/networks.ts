@@ -12,7 +12,9 @@ export enum SupportedChainId {
   BSC_TESTNET = "0x61",
   POLYGON_MAINNET = "0x89",
   FANTOM_MAINNET = "0xfa",
-  SOLANA_MAINNET = "0x89",
+  SOLANA_MAINNET = "solana",
+  ARBITRUM_MAINNET = "arbitrum",
+  OPTIMISM_MAINNET = "optimism",
   AVALANCHE_MAINNET = "0xa86a",
   OKEX_MAINNET = "0x42",
   HECO_MAINNET = "0x80"

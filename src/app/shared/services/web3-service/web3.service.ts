@@ -1,16 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import Web3 from "web3";
-import { AbiItem, Unit } from 'web3-utils'
+import { AbiItem } from 'web3-utils'
 import keys from 'src/app/config/constants/keys';
 import erc20Abi from 'src/app/config/abi/erc20.json';
 import { LocalStorageService } from '../local-storage-service/local-storage.service';
 import { environment } from 'src/environments/environment';
-import { UserTokenModel } from 'src/app/config/models/user-token.model';
 import { BIG_ZERO } from 'src/app/utils/bigNumber';
 import { SupportedChainId } from 'src/app/config/constants/networks'
 import { hexStripZeros } from "@ethersproject/bytes";
 import { BigNumber } from "@ethersproject/bignumber";
+import { Observable } from 'rxjs';
+import { select, Store } from '@ngrx/store';
+import { clearAddress, clearChain, setAddress, setChain } from 'src/app/store/web3store/web3.actions';
+import { selectFeatureAddress, selectFeatureChain } from 'src/app/store/web3store/web3.reducer';
 declare let window: any;
 
 @Injectable({
@@ -19,10 +22,14 @@ declare let window: any;
 export class Web3Service {
   private web3: Web3;
   httpOptions: any;
+  chainId$: Observable<string> | undefined;
+  address$: Observable<string> | undefined;
 
   constructor(
     private readonly localStorage: LocalStorageService,
-    private readonly httpClient: HttpClient
+    private readonly httpClient: HttpClient,
+    private addressStore: Store<{address: string}>,
+    private chainStore: Store<{chainId: string}>
     ) {
     this.web3 = new Web3(window.ethereum)
     this.httpOptions = {
@@ -30,6 +37,8 @@ export class Web3Service {
 				'Content-Type': 'application/json'
 			})
 		};
+    this.address$ = this.addressStore.pipe(select(selectFeatureAddress))
+    this.chainId$ = this.chainStore.pipe(select(selectFeatureChain))
   }
 
   async connectAccount(): Promise<any> {
@@ -47,12 +56,13 @@ export class Web3Service {
   async detectAccountChange(): Promise<any> {
     window.ethereum.on("accountsChanged", async (accounts: any) => {
       if (!accounts.length) {
-        this.localStorage.removeItem(keys.web3service.address)
-        this.localStorage.removeItem(keys.web3service.user_tokens)
+        this.addressStore.dispatch(clearAddress())
+        this.chainStore.dispatch(clearChain())
         console.log("User disconnect wallet");
       } else {
-        this.localStorage.setItem(keys.web3service.address, accounts.result[0]);
+        this.addressStore.dispatch(setAddress({address: accounts.result[0] }))
         const chainId = await this.getCurrentNetwork()
+        this.chainStore.dispatch(setChain({chainId: hexStripZeros( BigNumber.from(chainId).toHexString() ) }))
         this.getUserTokens(chainId)
       }
     })
@@ -64,8 +74,9 @@ export class Web3Service {
       const values = Object.values(SupportedChainId);
       if (!values.includes(formattedChainId as unknown as SupportedChainId)) {
         console.log(formattedChainId, 'is not supported');
-        this.localStorage.removeItem(keys.web3service.user_tokens)
+        this.chainStore.dispatch(clearChain())
       } else {
+        this.chainStore.dispatch(setChain({chainId: formattedChainId}))
         this.getUserTokens(chainId);
         console.log(formattedChainId);
       }
@@ -75,8 +86,9 @@ export class Web3Service {
   private async enableMetaMaskAccount(): Promise<any> {
     await window.ethereum.send('eth_requestAccounts')
       .then(async (accounts: any) => {
-        this.localStorage.setItem(keys.web3service.address, accounts.result[0]);
+        this.addressStore.dispatch(setAddress({address: accounts.result[0] }))
         const chainId = await this.getCurrentNetwork()
+        this.chainStore.dispatch(setChain({chainId: hexStripZeros( BigNumber.from(chainId).toHexString() ) }))
         this.getUserTokens(chainId)
       })
       .catch((e: any) => {
@@ -88,7 +100,8 @@ export class Web3Service {
   }
 
   getUserTokens(chainId: number) {
-    const account = this.localStorage.getItem(keys.web3service.address)
+    var account: string;
+    this.address$.subscribe((val) => account = val)
 		return this.httpClient.get(`${environment.covalenthq_gateway}/${chainId}/address/${account}/balances_v2/?format=JSON&nft=false&no-nft-fetch=true&key=${environment.covalenthq_apikey}`).subscribe((value: any) => {
       let res = value.data.items.map((data: any) => {
         const {contract_address, contract_ticker_symbol, balance} = data;

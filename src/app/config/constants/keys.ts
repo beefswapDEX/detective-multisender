@@ -1,7 +1,8 @@
 export default {
   web3service: {
     address: 'user_address',
-    user_tokens: 'user_tokens'
+    user_tokens: 'user_tokens',
+    chain_id: 'chain_id'
   },
   null: {
     97: '0xa527eda964fa843a105fbc3e007b01f145e21fdc',
