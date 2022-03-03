@@ -81,12 +81,19 @@
             </section>
         
             <section>
-                <button 
+                <button
+                    *ngIf="address === undefined"
                     class="flex items-center justify-center gap-2 bg-white py-2 px-3 rounded-full shadow-md select-none hover:opacity-90"
                     (click)="toggleModalConnectWallet()"
                 >
                     <img src="assets/images/svg/wallet.svg" alt="Wallet icon">
                     <p class="text-multisender-pink font-bold">Connect Wallet</p>
+                </button>
+                <button 
+                    *ngIf="address !== undefined"
+                    class="flex items-center justify-center gap-2 bg-white py-2 px-3 rounded-full shadow-md select-none hover:opacity-90"
+                >
+                    <p class="text-multisender-pink font-bold">{{address | address}}</p>
                 </button>
 
                 <div

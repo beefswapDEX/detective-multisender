@@ -78,7 +78,6 @@ export class Web3Service {
       } else {
         this.chainStore.dispatch(setChain({chainId: formattedChainId}))
         this.getUserTokens(chainId);
-        console.log(formattedChainId);
       }
     })
   }

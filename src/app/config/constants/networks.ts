@@ -9,9 +9,9 @@ export enum SupportedChainId {
   BSC_TESTNET = "0x61",
   POLYGON_MAINNET = "0x89",
   FANTOM_MAINNET = "0xfa",
-  SOLANA_MAINNET = "solana",
-  ARBITRUM_MAINNET = "arbitrum",
-  OPTIMISM_MAINNET = "optimism",
+  SOLANA_MAINNET = "0xe9ac0ce",
+  ARBITRUM_MAINNET = "0xa4b1",
+  OPTIMISM_MAINNET = "0xa",
   AVALANCHE_MAINNET = "0xa86a",
   OKEX_MAINNET = "0x42",
   HECO_MAINNET = "0x80"
@@ -21,7 +21,7 @@ export const NETWORK_CONFIG = {
     method: "wallet_addEthereumChain",
     params: [
       {
-        chainId: "0x38",
+        chainId: SupportedChainId.BSC_MAINNET,
         chainName: "BSC Mainnet",
         nativeCurrency: {
           name: "Binance Coin",
@@ -37,7 +37,7 @@ export const NETWORK_CONFIG = {
     method: "wallet_addEthereumChain",
     params: [
       {
-        chainId: "0x89",
+        chainId: SupportedChainId.POLYGON_MAINNET,
         chainName: "Polygon Mainnet",
         nativeCurrency: {
           name: "Polygon",
@@ -53,7 +53,7 @@ export const NETWORK_CONFIG = {
     method: "wallet_addEthereumChain",
     params: [
       {
-        chainId: "0xfa",
+        chainId: SupportedChainId.FANTOM_MAINNET,
         chainName: "Fantom Opera",
         nativeCurrency: {
           name: "Fantom",
@@ -65,54 +65,52 @@ export const NETWORK_CONFIG = {
       },
     ],
   },
-  // TODO: Find the config
+  // TODO: Confirm the config
   [SupportedChainId.SOLANA_MAINNET]: {
     method: "wallet_addEthereumChain",
     params: [
       {
-        chainId: "0x89",
-        chainName: "Polygon Mainnet",
+        chainId: SupportedChainId.SOLANA_MAINNET,
+        chainName: "Neon EVM DevNet",
         nativeCurrency: {
-          name: "Polygon",
-          symbol: "MATIC",
+          name: "Neon",
+          symbol: "NEON",
           decimals: 18,
         },
-        rpcUrls: ["https://rpc-mainnet.maticvigil.com"],
-        blockExplorerUrls: [`https://polygonscan.com/`],
+        rpcUrls: ["https://proxy.devnet.neonlabs.org/solana"],
+        blockExplorerUrls: [`https://neon-labs.org/`],
       },
     ],
   },
-  // TODO: Find the config
   [SupportedChainId.ARBITRUM_MAINNET]: {
     method: "wallet_addEthereumChain",
     params: [
       {
-        chainId: "0x89",
-        chainName: "Polygon Mainnet",
+        chainId: SupportedChainId.ARBITRUM_MAINNET,
+        chainName: "Arbitrum Mainnet",
         nativeCurrency: {
-          name: "Polygon",
-          symbol: "MATIC",
+          name: 'ETH',
+          symbol: 'ETH',
           decimals: 18,
         },
-        rpcUrls: ["https://rpc-mainnet.maticvigil.com"],
-        blockExplorerUrls: [`https://polygonscan.com/`],
+        rpcUrls: ["https://arb1.arbitrum.io/rpc"],
+        blockExplorerUrls: [`https://arbiscan.io`],
       },
     ],
   },
-  // TODO: Find the config
   [SupportedChainId.OPTIMISM_MAINNET]: {
     method: "wallet_addEthereumChain",
     params: [
       {
-        chainId: "0x89",
-        chainName: "Polygon Mainnet",
+        chainId: SupportedChainId.OPTIMISM_MAINNET,
+        chainName: "Optimistic Ethereum Mainnet",
         nativeCurrency: {
-          name: "Polygon",
-          symbol: "MATIC",
+          name: 'ETH',
+          symbol: 'ETH',
           decimals: 18,
         },
-        rpcUrls: ["https://rpc-mainnet.maticvigil.com"],
-        blockExplorerUrls: [`https://polygonscan.com/`],
+        rpcUrls: ["https://mainnet.optimism.io"],
+        blockExplorerUrls: [`https://optimistic.etherscan.io`],
       },
     ],
   },
@@ -120,7 +118,7 @@ export const NETWORK_CONFIG = {
     method: "wallet_addEthereumChain",
     params: [
       {
-        chainId: "0xa86a",
+        chainId: SupportedChainId.AVALANCHE_MAINNET,
         chainName: "Avalanche C-Chain",
         nativeCurrency: {
           name: "Avalanache",
@@ -136,7 +134,7 @@ export const NETWORK_CONFIG = {
     method: "wallet_addEthereumChain",
     params: [
       {
-        chainId: "0x42",
+        chainId: SupportedChainId.OKEX_MAINNET,
         chainName: "OKExChain Mainnet",
         nativeCurrency: {
           name: "OKT",
@@ -151,7 +149,7 @@ export const NETWORK_CONFIG = {
   [SupportedChainId.HECO_MAINNET]: {
     method: "wallet_addEthereumChain",
     params: [{
-      chainId: "0x80",
+      chainId: SupportedChainId.HECO_MAINNET,
       chainName: "HECO MAINNET",
       nativeCurrency: {
         name: "HECO",
