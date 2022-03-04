@@ -111,6 +111,8 @@ export class Web3Service {
         }
       })
       this.localStorage.setItem(keys.web3service.user_tokens, res)
+    }, (error: any) => {
+      window.alert(error.error.error_message)
     });
 	}
 
@@ -120,7 +122,6 @@ export class Web3Service {
       const balance = await contract.methods.balanceOf(account).call();
       const decimals = await contract.methods.decimals().call();
       const formattedBalance = balance / Math.pow(10, decimals);
-      console.log(formattedBalance);
       return formattedBalance;
     } catch (error) {
       console.log('getBalance', error)
@@ -155,6 +156,10 @@ export class Web3Service {
       // if no window.ethereum then MetaMask is not installed
       alert('MetaMask is not installed. Please consider installing it: https://metamask.io/download.html');
     }
+  }
+
+  validateAddress(address: string): boolean {
+    return Web3.utils.isAddress(address)
   }
 
 }

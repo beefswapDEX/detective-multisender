@@ -3,6 +3,8 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+@import '~codemirror/lib/codemirror';
+@import '~codemirror/theme/base16-light';
 
 * {
   margin: 0;
@@ -12,5 +14,10 @@
 }
 button {
   pointer-events: all;
+}
+.CodeMirror
+{
+  line-height:30px;
+  // z-index: 0;
 }
 

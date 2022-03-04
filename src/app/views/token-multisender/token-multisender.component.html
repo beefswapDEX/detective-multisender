@@ -75,7 +75,17 @@
         </div>
       </div>
       <div class="address__input-container">
-        <textarea
+        <ngx-codemirror #receiverInput
+          class="form-control"
+          formControlName="receiverWithAmount"
+          [options]="{
+            lineNumbers: true,
+            theme: 'base16-light',
+            mode: 'markdown',
+            styleSelectedText: true
+          }"
+        ></ngx-codemirror>
+        <!-- <textarea
             class="
               form-control
               block
@@ -95,11 +105,11 @@
             formControlName="receiverWithAmount"
             rows="9"
             placeholder="Put list of address"
-        ></textarea>
+        ></textarea> -->
       </div>
       <div class="label-container">
         <div class="left">
-          <label class="text-gray-500	">The address and amount are separated by commas</label>
+          <label class="text-gray-500	">The address and amount are separated by <b>;</b> (semicolon) </label>
         </div>
         <div class="right">
           <button>Show Examples</button>
@@ -111,9 +121,20 @@
     <div *ngIf="preparationData.controls.token.hasError('AddressNotValid') && preparationData.controls.token.touched" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
       <span class="block sm:inline">Please enter valid token address</span>
     </div>
+    <div *ngIf="receiverErrorData.length > 0 && preparationData.controls.receiverWithAmount.touched" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-1" role="alert">
+      <span *ngFor="let item of receiverErrorData" class="block w-full">
+        Error happen at line {{item.line}} ({{item.errorDesc}})
+      </span>
+    </div>
+    <div *ngIf="receiverValidData.length > 0 && isInsufficientBalance" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-1" role="alert">
+      <span class="block w-full">
+        Insuffcient Balance
+      </span>
+    </div>
   </div>
   <div class="nav-container">
     <button *ngIf="step > 1" type="button" class="btn-nav" (click)="navigateStep(step-1)">Previous</button>
-    <button type="submit" class="btn-nav" [disabled]="preparationData.invalid" (click)="navigateStep(step+1)">Next</button>
+    <button *ngIf="preparationData.valid && !isInsufficientBalance" type="submit" class="btn-nav" (click)="navigateStep(step+1)">Next</button>
+    <button *ngIf="preparationData.invalid || isInsufficientBalance" type="submit" class="btn-nav" [disabled]="true">Next</button>
   </div>
 </div>
