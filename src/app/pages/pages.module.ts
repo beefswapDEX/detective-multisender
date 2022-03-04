@@ -4,6 +4,7 @@ import { MainpageModuleRoutes } from './pages-routing.module';
 import { RouterModule } from '@angular/router';
 import { MainComponent } from './main/main.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 
 // Components
 import { AppBarComponent } from '../components/app-bar/app-bar.component';
@@ -27,7 +28,8 @@ import { SharedModule } from '../shared/shared.module';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    SharedModule
+    SharedModule,
+    CodemirrorModule
   ]
 })
 export class PagesModule { }
