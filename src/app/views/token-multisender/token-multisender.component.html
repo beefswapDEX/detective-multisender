@@ -39,7 +39,6 @@
         </div>
         <div class="token-field__input">
           <input (blur)="onBlur()" (click)="onFocus()" (input)="searchToken()"
-                  [(ngModel)]="searchTokenText"
                   formControlName="token" type="text" placeholder="Select your token"
                   class="form-control text-field appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight">
           <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -78,12 +77,7 @@
         <ngx-codemirror #receiverInput
           class="form-control"
           formControlName="receiverWithAmount"
-          [options]="{
-            lineNumbers: true,
-            theme: 'base16-light',
-            mode: 'markdown',
-            styleSelectedText: true
-          }"
+          [options]="codeMirrorOptions"
         ></ngx-codemirror>
         <!-- <textarea
             class="
@@ -134,7 +128,7 @@
   </div>
   <div class="nav-container">
     <button *ngIf="step > 1" type="button" class="btn-nav" (click)="navigateStep(step-1)">Previous</button>
-    <button *ngIf="preparationData.valid && !isInsufficientBalance" type="submit" class="btn-nav" (click)="navigateStep(step+1)">Next</button>
+    <button *ngIf="preparationData.valid && !isInsufficientBalance && receiverValidData.length > 0" type="submit" class="btn-nav" (click)="navigateStep(step+1)">Next</button>
     <button *ngIf="preparationData.invalid || isInsufficientBalance" type="submit" class="btn-nav" [disabled]="true">Next</button>
   </div>
 </div>

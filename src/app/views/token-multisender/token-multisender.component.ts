@@ -22,7 +22,7 @@ interface ReceiverWithAmount {
   styleUrls: ['./token-multisender.component.scss']
 })
 export class TokenMultisenderComponent implements OnInit {
-  @ViewChild("receiverInput") private reveiverInput
+  @ViewChild("receiverInput") private receiverInput
   step = 1;
   address: string | undefined;
   openDropdown: boolean = false
@@ -32,15 +32,19 @@ export class TokenMultisenderComponent implements OnInit {
   receiverValidData: ReceiverWithAmount[] = [];
   receiverErrorData: ErrorDataModel[] = [];
   isInsufficientBalance: boolean = false;
-  searchTokenText: string = "";
-  content: any;
+  codeMirrorOptions: any = {
+    theme: "base16-light",
+    mode: "application/json",
+    lineNumbers: true,
+    autoRefresh: true
+  };
   balance: any = BIG_ZERO;
   constructor(
         private readonly web3Service: Web3Service,
         private readonly localStorageService: LocalStorageService
     ) {
     this.preparationData = new FormGroup({
-      token: new FormControl(null, [Validators.required, CustomValidators.addressValidator]),
+      token: new FormControl("", [Validators.required, CustomValidators.addressValidator]),
       receiverWithAmount: new FormControl(null, {
           validators:[Validators.required],
         }
@@ -49,6 +53,7 @@ export class TokenMultisenderComponent implements OnInit {
   }
   
   ngOnInit(): void {
+    setTimeout(() => this.receiverInput.codeMirror.refresh(), 500 )
     this.web3Service.detectAccountChange()
     this.web3Service.detectNetworkChange()
     this.web3Service.address$?.subscribe((val) => {
@@ -64,7 +69,7 @@ export class TokenMultisenderComponent implements OnInit {
     .subscribe(() => {
       this.validateReceiver()
     })
-    this.preparationData.get('token').valueChanges.subscribe(() => {
+    this.preparationData.controls.token.valueChanges.subscribe(() => {
       if(this.preparationData.controls.token.valid) {
         this.getBalance()
       } else {
@@ -92,13 +97,13 @@ export class TokenMultisenderComponent implements OnInit {
 
   searchToken(): void {
     const searchTokenData = this.localStorageService.getItem(keys.web3service.user_tokens).filter((token: any) => 
-          token.label.toLocaleLowerCase().includes(this.searchTokenText.toLocaleLowerCase())
+          token.label.toLocaleLowerCase().includes(this.preparationData.controls.token.value?.toLocaleLowerCase())
         )
     this.filteredUserTokens = searchTokenData
   }
 
   selectToken(item: UserTokenModel) {
-    this.searchTokenText = item.value
+    this.preparationData.controls.token.setValue(item.value)
     this.searchToken()   
   }
 
@@ -114,9 +119,9 @@ export class TokenMultisenderComponent implements OnInit {
   validateReceiver() {
     var addressDataWithAmount : ReceiverWithAmount[] = [];
     var errorData : ErrorDataModel[] = [];
-    const lineCount = this.reveiverInput.codeMirror.lineCount();
+    const lineCount = this.receiverInput.codeMirror.lineCount();
     for (let index = 0; index < lineCount; index++) {
-      var lineData = this.reveiverInput.codeMirror.getLine(index)
+      var lineData = this.receiverInput.codeMirror.getLine(index)
       var dataSplit = lineData.split(";");
       var address = dataSplit[0]
       var amount = Number(dataSplit[1])
@@ -128,7 +133,7 @@ export class TokenMultisenderComponent implements OnInit {
         const isAddress = this.web3Service.validateAddress(address)
         // check address is valid
         if (isAddress && !isNaN(amount)) {
-          this.highlightText(index, lineData, 'unset')
+          this.highlightText(index, lineData, '#90a959')
           addressDataWithAmount.push({address: address, amount: amount})
         } else {
           this.highlightText(index, lineData, '#fc3c63')
@@ -142,7 +147,7 @@ export class TokenMultisenderComponent implements OnInit {
   }
 
   highlightText(index: number, lineData: string, color: string) {
-    this.reveiverInput.codeMirror.markText({line:index,ch:0}, {line:index, ch:lineData.length},{css: `color: ${color}`});
+    this.receiverInput.codeMirror.markText({line:index,ch:0}, {line:index, ch:lineData.length},{css: `color: ${color}`});
   }
 
   calculateBalance() {
