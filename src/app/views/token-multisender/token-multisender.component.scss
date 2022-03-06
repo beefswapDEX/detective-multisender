@@ -101,7 +101,7 @@ ul {
 .next-button:hover {
   opacity: 70%;
 }
-
+// step 1 content start //
 .form-container {
   display: flex;
   flex-direction: column;
@@ -249,6 +249,33 @@ ul {
     }
   }
 }
+// step 1 content end //
+
+// step 2 content start //
+.network-speed__container {
+  width: 50vw;
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 22px;
+    width: 22px;
+    // cursor: ew-resize;
+    background: #2196F3;
+    // box-shadow: -405px 0 0 400px #605E5C;
+    border-radius: 50%;  
+  }
+}
+.list-receipent__container {
+  width: 50vw;
+  th {
+    text-align: left;
+  }
+}
+.summary__container {
+  width: 50vw;
+}
+// step 2 content end //
 .message-container {
   width: 50vw;
 }

@@ -5,9 +5,11 @@ import keys from 'src/app/config/constants/keys';
 import { NetworkOptionModel, networkOptions } from 'src/app/config/constants/networks';
 import { UserTokenModel } from 'src/app/config/models/user-token.model';
 import { LocalStorageService } from 'src/app/shared/services/local-storage-service/local-storage.service';
+import { TokenService } from 'src/app/shared/services/token-service/token.service';
 import { Web3Service } from 'src/app/shared/services/web3-service/web3.service';
 import { CustomValidators } from 'src/app/shared/validators/custom-validators';
 import { BIG_ZERO } from 'src/app/utils/bigNumber';
+
 interface ErrorDataModel {
   line: number,
   errorDesc: string
@@ -16,14 +18,23 @@ interface ReceiverWithAmount {
   address: string,
   amount: number 
 }
+interface SummaryTransaction {
+  totalNumberAddress: number,
+  totalAmountSent: number,
+  totalNumberOfTransaction: number,
+  tokenBalance: number,
+  approximateCost: any,
+  bnbBalance: number,
+  tokenSymbol: string,
+}
 @Component({
   selector: 'app-token-multisender',
   templateUrl: './token-multisender.component.html',
   styleUrls: ['./token-multisender.component.scss']
 })
 export class TokenMultisenderComponent implements OnInit {
-  @ViewChild("receiverInput") private reveiverInput
-  step = 1;
+  @ViewChild("receiverInput") private receiverInput
+  step = 2;
   address: string | undefined;
   openDropdown: boolean = false
   preparationData: FormGroup
@@ -31,16 +42,31 @@ export class TokenMultisenderComponent implements OnInit {
   filteredUserTokens: UserTokenModel[] = [];
   receiverValidData: ReceiverWithAmount[] = [];
   receiverErrorData: ErrorDataModel[] = [];
-  isInsufficientBalance: boolean = false;
-  searchTokenText: string = "";
-  content: any;
+  isInsufficientBalance: boolean = true;
+  codeMirrorOptions: any = {
+    theme: "base16-light",
+    mode: "application/json",
+    lineNumbers: true,
+    autoRefresh: true
+  };
   balance: any = BIG_ZERO;
+  summaryTransaction: SummaryTransaction = {
+    totalNumberAddress: 0,
+    totalAmountSent: 0,
+    totalNumberOfTransaction: 0,
+    tokenBalance: 0,
+    approximateCost: 0,
+    bnbBalance: 0,
+    tokenSymbol: '',
+  };
+
   constructor(
         private readonly web3Service: Web3Service,
+        private readonly tokenService: TokenService,
         private readonly localStorageService: LocalStorageService
     ) {
     this.preparationData = new FormGroup({
-      token: new FormControl(null, [Validators.required, CustomValidators.addressValidator]),
+      token: new FormControl("", [Validators.required, CustomValidators.addressValidator]),
       receiverWithAmount: new FormControl(null, {
           validators:[Validators.required],
         }
@@ -49,6 +75,9 @@ export class TokenMultisenderComponent implements OnInit {
   }
   
   ngOnInit(): void {
+    if(this.step == 1) {
+      setTimeout(() => this.receiverInput.codeMirror.refresh(), 500 )
+    }
     this.web3Service.detectAccountChange()
     this.web3Service.detectNetworkChange()
     this.web3Service.address$?.subscribe((val) => {
@@ -59,13 +88,14 @@ export class TokenMultisenderComponent implements OnInit {
         return network.chainId === val;
       });
     })
-    this.preparationData.get('receiverWithAmount').valueChanges
+    this.preparationData.controls.receiverWithAmount.valueChanges
     .pipe(debounceTime(1000))
     .subscribe(() => {
       this.validateReceiver()
     })
-    this.preparationData.get('token').valueChanges.subscribe(() => {
+    this.preparationData.controls.token.valueChanges.subscribe(() => {
       if(this.preparationData.controls.token.valid) {
+        this.tokenService.setTokenAddress(this.preparationData.controls.token.value)
         this.getBalance()
       } else {
         this.balance = BIG_ZERO;
@@ -91,22 +121,22 @@ export class TokenMultisenderComponent implements OnInit {
   }
 
   searchToken(): void {
-    const searchTokenData = this.localStorageService.getItem(keys.web3service.user_tokens).filter((token: any) => 
-          token.label.toLocaleLowerCase().includes(this.searchTokenText.toLocaleLowerCase())
+    const filteredToken = this.localStorageService.getItem(keys.web3service.user_tokens).filter((token: any) => 
+          token.label.toLocaleLowerCase().includes(this.preparationData.controls.token.value?.toLocaleLowerCase())
         )
-    this.filteredUserTokens = searchTokenData
+    this.filteredUserTokens = filteredToken
   }
 
   selectToken(item: UserTokenModel) {
-    this.searchTokenText = item.value
+    this.preparationData.controls.token.setValue(item.value)
     this.searchToken()   
   }
 
   async getBalance() {
-    const balance = await this.web3Service.getBalance(this.preparationData.controls.token.value, this.address)
+    const balance = await this.tokenService.getBalance()
     this.balance = Number(balance)
     if(this.receiverValidData.length > 0) {
-      this.calculateBalance()
+      this.calculateCostAndBalance()
     }
   }
 
@@ -114,9 +144,9 @@ export class TokenMultisenderComponent implements OnInit {
   validateReceiver() {
     var addressDataWithAmount : ReceiverWithAmount[] = [];
     var errorData : ErrorDataModel[] = [];
-    const lineCount = this.reveiverInput.codeMirror.lineCount();
+    const lineCount = this.receiverInput.codeMirror.lineCount();
     for (let index = 0; index < lineCount; index++) {
-      var lineData = this.reveiverInput.codeMirror.getLine(index)
+      var lineData = this.receiverInput.codeMirror.getLine(index)
       var dataSplit = lineData.split(";");
       var address = dataSplit[0]
       var amount = Number(dataSplit[1])
@@ -128,7 +158,7 @@ export class TokenMultisenderComponent implements OnInit {
         const isAddress = this.web3Service.validateAddress(address)
         // check address is valid
         if (isAddress && !isNaN(amount)) {
-          this.highlightText(index, lineData, 'unset')
+          this.highlightText(index, lineData, '#90a959')
           addressDataWithAmount.push({address: address, amount: amount})
         } else {
           this.highlightText(index, lineData, '#fc3c63')
@@ -138,19 +168,37 @@ export class TokenMultisenderComponent implements OnInit {
     }
     this.receiverValidData = addressDataWithAmount;
     this.receiverErrorData = errorData;
-    this.calculateBalance()
+    this.calculateCostAndBalance();
   }
 
   highlightText(index: number, lineData: string, color: string) {
-    this.reveiverInput.codeMirror.markText({line:index,ch:0}, {line:index, ch:lineData.length},{css: `color: ${color}`});
+    // highlight inline text with error / not
+    this.receiverInput.codeMirror.markText({line:index,ch:0}, {line:index, ch:lineData.length},{css: `color: ${color}`});
   }
 
-  calculateBalance() {
+  calculateCostAndBalance() {
     var totalAmount: number = 0;
+    this.tokenService.addressValidData = this.receiverValidData;
     this.receiverValidData.forEach((value: any) => {
       totalAmount += value.amount
     })
     this.isInsufficientBalance = this.balance < totalAmount;
+    if (!this.isInsufficientBalance && this.receiverValidData.length > 0) {
+      this.summaryTransaction = {
+        totalNumberAddress: this.receiverValidData.length,
+        totalAmountSent: totalAmount,
+        totalNumberOfTransaction: this.tokenService.totalNumberTx,
+        tokenBalance: this.balance,
+        approximateCost: this.tokenService.totalCostInEth,
+        bnbBalance: 0,
+        tokenSymbol: this.tokenService.tokenSymbol
+      }
+    }
+  }
+
+  removeReceiver(index: number) {
+    this.receiverValidData.splice(index, 1)
+    this.calculateCostAndBalance()
   }
 
 }

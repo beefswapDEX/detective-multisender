@@ -1,12 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import Web3 from "web3";
-import { AbiItem } from 'web3-utils'
-import keys from 'src/app/config/constants/keys';
-import erc20Abi from 'src/app/config/abi/erc20.json';
 import { LocalStorageService } from '../local-storage-service/local-storage.service';
-import { environment } from 'src/environments/environment';
-import { BIG_ZERO } from 'src/app/utils/bigNumber';
 import { NETWORK_CONFIG, SupportedChainId } from 'src/app/config/constants/networks'
 import { hexStripZeros } from "@ethersproject/bytes";
 import { BigNumber } from "@ethersproject/bignumber";
@@ -14,6 +9,7 @@ import { Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { clearAddress, clearChain, setAddress, setChain } from 'src/app/store/web3store/web3.actions';
 import { selectFeatureAddress, selectFeatureChain } from 'src/app/store/web3store/web3.reducer';
+import { TokenService } from '../token-service/token.service';
 declare let window: any;
 
 @Injectable({
@@ -27,6 +23,7 @@ export class Web3Service {
 
   constructor(
     private readonly localStorage: LocalStorageService,
+    private readonly tokenService: TokenService,
     private readonly httpClient: HttpClient,
     private addressStore: Store<{address: string}>,
     private chainStore: Store<{chainId: string}>
@@ -63,7 +60,7 @@ export class Web3Service {
         this.addressStore.dispatch(setAddress({address: accounts.result[0] }))
         const chainId = await this.getCurrentNetwork()
         this.chainStore.dispatch(setChain({chainId: hexStripZeros( BigNumber.from(chainId).toHexString() ) }))
-        this.getUserTokens(chainId)
+        this.tokenService.getUserTokens()
       }
     })
   }
@@ -77,7 +74,7 @@ export class Web3Service {
         this.chainStore.dispatch(clearChain())
       } else {
         this.chainStore.dispatch(setChain({chainId: formattedChainId}))
-        this.getUserTokens(chainId);
+        this.tokenService.getUserTokens();
       }
     })
   }
@@ -88,7 +85,7 @@ export class Web3Service {
         this.addressStore.dispatch(setAddress({address: accounts.result[0] }))
         const chainId = await this.getCurrentNetwork()
         this.chainStore.dispatch(setChain({chainId: hexStripZeros( BigNumber.from(chainId).toHexString() ) }))
-        this.getUserTokens(chainId)
+        this.tokenService.getUserTokens()
       })
       .catch((e: any) => {
         console.log(e);
@@ -96,37 +93,6 @@ export class Web3Service {
           window.alert(e.message);
         }
       })
-  }
-
-  getUserTokens(chainId: number) {
-    var account: string;
-    this.address$.subscribe((val) => account = val)
-		return this.httpClient.get(`${environment.covalenthq_gateway}/${chainId}/address/${account}/balances_v2/?format=JSON&nft=false&no-nft-fetch=true&key=${environment.covalenthq_apikey}`).subscribe((value: any) => {
-      let res = value.data.items.map((data: any) => {
-        const {contract_address, contract_ticker_symbol, balance} = data;
-        return {
-          label: `${contract_ticker_symbol} - ${contract_address}`,
-          value: `${contract_address}`,
-          balance: `${this.web3.utils.fromWei(balance)}`
-        }
-      })
-      this.localStorage.setItem(keys.web3service.user_tokens, res)
-    }, (error: any) => {
-      window.alert(error.error.error_message)
-    });
-	}
-
-  async getBalance(tokenAddress: string, account: string): Promise<any> {
-    try {
-      const contract = new this.web3.eth.Contract(erc20Abi as AbiItem[], tokenAddress);
-      const balance = await contract.methods.balanceOf(account).call();
-      const decimals = await contract.methods.decimals().call();
-      const formattedBalance = balance / Math.pow(10, decimals);
-      return formattedBalance;
-    } catch (error) {
-      console.log('getBalance', error)
-      return BIG_ZERO;
-    }
   }
 
   async getCurrentNetwork(): Promise<any> {
