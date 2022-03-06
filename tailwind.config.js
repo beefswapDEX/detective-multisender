@@ -8,7 +8,9 @@ module.exports = {
         'multisender-blue': 'rgba(98, 126, 234, 0.51)',
         'multisender-blue-dark': '#033251',
         'multisender-pink': '#E8464E',
-        'multisender-modal': 'rgba(0, 0, 0, 0.2)'
+        'multisender-modal': 'rgba(0, 0, 0, 0.2)',
+        'multisender-grey': '#E1DFDF',
+        'multisender-text-dark': '#333333'
       }
     },
   },

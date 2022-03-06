@@ -25,107 +25,166 @@
       </div>
     </div>
   </section>
-  <form class="form-container" [formGroup]="preparationData">
-    <div class="token-field-container">
-      <div class="token-field__item w-full">
-        <div class="token-field__label">
-          <label class="label-title">Token</label>
-          <div class="badge-network">
-            <span>Contract ({{selectedNetwork[0]?.name}})</span>
+  <ng-container *ngIf="step === 1">
+    <form class="form-container" [formGroup]="preparationData">
+      <div class="token-field-container">
+        <div class="token-field__item w-full">
+          <div class="token-field__label">
+            <label class="label-title">Token</label>
+            <div class="badge-network">
+              <span>Contract ({{selectedNetwork[0]?.name}})</span>
+            </div>
+            <div class="balance__container">
+              <span>Balance: {{balance}}</span>
+            </div>
           </div>
-          <div class="balance__container">
-            <span>Balance: {{balance}}</span>
+          <div class="token-field__input">
+            <input (blur)="onBlur()" (click)="onFocus()" (input)="searchToken()"
+                    formControlName="token" type="text" placeholder="Select your token"
+                    class="form-control text-field appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight">
+            <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0.292893 0.292893C0.683417 -0.0976311 1.31658 -0.0976311 1.70711 0.292893L7 5.58579L12.2929 0.292893C12.6834 -0.0976311 13.3166 -0.0976311 13.7071 0.292893C14.0976 0.683418 14.0976 1.31658 13.7071 1.70711L7.70711 7.70711C7.31658 8.09763 6.68342 8.09763 6.29289 7.70711L0.292893 1.70711C-0.0976311 1.31658 -0.0976311 0.683418 0.292893 0.292893Z" fill="url(#paint0_linear_156_247)"/>
+              <defs>
+              <linearGradient id="paint0_linear_156_247" x1="7" y1="0" x2="7" y2="8" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#033251"/>
+              <stop offset="1" stop-color="#033251" stop-opacity="0.68"/>
+              </linearGradient>
+              </defs>
+            </svg>
+            <div *ngIf="openDropdown && filteredUserTokens.length >= 1" class="autocomplete__dropdown w-full border-2">
+              <a role="button" (click)="selectToken(item)" class="item w-full hover:bg-gray-200 bg-white py-2 px-3" *ngFor="let item of filteredUserTokens;">{{item.label}}</a>
+            </div>            
           </div>
         </div>
-        <div class="token-field__input">
-          <input (blur)="onBlur()" (click)="onFocus()" (input)="searchToken()"
-                  formControlName="token" type="text" placeholder="Select your token"
-                  class="form-control text-field appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight">
-          <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0.292893 0.292893C0.683417 -0.0976311 1.31658 -0.0976311 1.70711 0.292893L7 5.58579L12.2929 0.292893C12.6834 -0.0976311 13.3166 -0.0976311 13.7071 0.292893C14.0976 0.683418 14.0976 1.31658 13.7071 1.70711L7.70711 7.70711C7.31658 8.09763 6.68342 8.09763 6.29289 7.70711L0.292893 1.70711C-0.0976311 1.31658 -0.0976311 0.683418 0.292893 0.292893Z" fill="url(#paint0_linear_156_247)"/>
-            <defs>
-            <linearGradient id="paint0_linear_156_247" x1="7" y1="0" x2="7" y2="8" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#033251"/>
-            <stop offset="1" stop-color="#033251" stop-opacity="0.68"/>
-            </linearGradient>
-            </defs>
-          </svg>
-          <div *ngIf="openDropdown && filteredUserTokens.length >= 1" class="autocomplete__dropdown w-full border-2">
-            <a role="button" (click)="selectToken(item)" class="item w-full hover:bg-gray-200 bg-white py-2 px-3" *ngFor="let item of filteredUserTokens;">{{item.label}}</a>
-          </div>            
+        <div class="deflationary__container">
+          <label class="label-title">Deflationary</label>
+          <label class="switch">
+            <input type="checkbox">
+            <span class="slider round"></span>
+          </label>
         </div>
       </div>
-      <div class="deflationary__container">
-        <label class="label-title">Deflationary</label>
-        <label class="switch">
-          <input type="checkbox">
-          <span class="slider round"></span>
-        </label>
-      </div>
-    </div>
-    <div class="address-field-container">
-      <div class="label-container">
-        <div class="left">
-          <label class="label-title">Addresses with Amounts</label>
+      <div class="address-field-container">
+        <div class="label-container">
+          <div class="left">
+            <label class="label-title">Addresses with Amounts</label>
+          </div>
+          <div class="right">
+            <button>Auto add amounts</button>
+            <button>Upload File</button>
+          </div>
         </div>
-        <div class="right">
-          <button>Auto add amounts</button>
-          <button>Upload File</button>
-        </div>
-      </div>
-      <div class="address__input-container">
-        <ngx-codemirror #receiverInput
-          class="form-control"
-          formControlName="receiverWithAmount"
-          [options]="codeMirrorOptions"
-        ></ngx-codemirror>
-        <!-- <textarea
-            class="
-              form-control
-              block
-              w-full
-              px-3
-              py-1.5
-              text-base
-              font-normal
-              text-gray-700
-              border border-solid border-gray-300
-              rounded
-              transition
-              ease-in-out
-              m-0
-              resize-none
-            "
+        <div class="address__input-container">
+          <ngx-codemirror #receiverInput
+            class="form-control"
             formControlName="receiverWithAmount"
-            rows="9"
-            placeholder="Put list of address"
-        ></textarea> -->
-      </div>
-      <div class="label-container">
-        <div class="left">
-          <label class="text-gray-500	">The address and amount are separated by <b>;</b> (semicolon) </label>
+            [options]="codeMirrorOptions"
+          ></ngx-codemirror>
         </div>
-        <div class="right">
-          <button>Show Examples</button>
+        <div class="label-container">
+          <div class="left">
+            <label class="text-gray-500	">The address and amount are separated by <b>;</b> (semicolon) </label>
+          </div>
+          <div class="right">
+            <button>Show Examples</button>
+          </div>
         </div>
       </div>
+    </form>
+    <div class="message-container my-2">
+      <div *ngIf="preparationData.controls.token.hasError('AddressNotValid') && preparationData.controls.token.touched" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <span class="block sm:inline">Please enter valid token address</span>
+      </div>
+      <div *ngIf="receiverErrorData.length > 0 && preparationData.controls.receiverWithAmount.touched" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-1" role="alert">
+        <span *ngFor="let item of receiverErrorData" class="block w-full">
+          Error happen at line {{item.line}} ({{item.errorDesc}})
+        </span>
+      </div>
+      <div *ngIf="receiverValidData.length > 0 && isInsufficientBalance" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-1" role="alert">
+        <span class="block w-full">
+          Insuffcient Balance
+        </span>
+      </div>
     </div>
-  </form>
-  <div class="message-container my-2">
-    <div *ngIf="preparationData.controls.token.hasError('AddressNotValid') && preparationData.controls.token.touched" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-      <span class="block sm:inline">Please enter valid token address</span>
+  </ng-container>
+  <ng-container *ngIf="step === 2">
+    <div class="network-speed__container">
+      <label for="customRange2" class="form-label">Example range</label>
+      <input type="range" name="price" min="1" max="100" value="10" class="w-full h-2 bg-multisender-grey appearance-none" />
     </div>
-    <div *ngIf="receiverErrorData.length > 0 && preparationData.controls.receiverWithAmount.touched" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-1" role="alert">
-      <span *ngFor="let item of receiverErrorData" class="block w-full">
-        Error happen at line {{item.line}} ({{item.errorDesc}})
-      </span>
+    <div class="list-receipent__container mt-5">
+      <span class="text-xl text-multisender-text-dark">List of recipients</span>
+      <table class="table-auto w-full border-2 rounded-md mt-4">
+        <thead class="bg-gray-50">
+          <tr>
+            <th scope="col" class="py-3 px-6 font-medium text-gray-700">Address</th>
+            <th scope="col" class="py-3 px-6 font-medium text-gray-700">Amount</th>
+            <th scope="col" class="py-3 px-6 font-medium text-gray-700"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of receiverValidData; let i = index" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+            <td class="py-4 px-6 text-md font-normal text-gray-900 whitespace-nowrap dark:text-white" >{{item.address}}</td>
+            <td class="py-4 px-6 text-md font-normal text-gray-900 whitespace-nowrap dark:text-white" >{{item.amount}}</td>
+            <td class="py-4 px-6 text-md font-normal text-gray-900 whitespace-nowrap dark:text-white" >
+              <button (click)="removeReceiver(i)" class="bg-transparent text-red-400 font-normal hover:text-red-500 py-2 px-4 border-none">
+                Remove
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <div *ngIf="receiverValidData.length > 0 && isInsufficientBalance" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-1" role="alert">
-      <span class="block w-full">
-        Insuffcient Balance
-      </span>
+    <div class="summary__container mt-5">
+      <span class="text-xl text-multisender-text-dark">Summary</span>
+      <table class="w-full max-w-full border-2 rounded-md mt-4 overflow-x-scroll">
+        <tbody>
+          <tr class="bg-white">
+            <td class="py-4 px-6 text-md font-normal text-gray-900 whitespace-nowrap dark:text-white" >
+              <div class="flex flex-col">
+                <span class="text-xl text-multisender-text-dark">{{summaryTransaction.totalNumberAddress}}</span>
+                <span class="text-sm text-multisender-text-dark">Total number of addresses</span>
+              </div>
+            </td>
+            <td class="py-4 px-6 text-md font-normal text-gray-900 whitespace-nowrap dark:text-white" >
+              <div class="flex flex-col">
+                <span class="text-xl text-multisender-text-dark">{{summaryTransaction.totalAmountSent}} {{summaryTransaction.tokenSymbol}}</span>
+                <span class="text-sm text-multisender-text-dark">Total number of tokens to be sent</span>
+              </div>
+            </td>
+          </tr>
+          <tr class="bg-white">
+            <td class="py-4 px-6 text-md font-normal text-gray-900 whitespace-nowrap dark:text-white" >
+              <div class="flex flex-col">
+                <span class="text-xl text-multisender-text-dark">{{summaryTransaction.totalNumberOfTransaction}}</span>
+                <span class="text-sm text-multisender-text-dark">Total number of transactions needed</span>
+              </div>
+            </td>
+            <td class="py-4 px-6 text-md font-normal text-gray-900 whitespace-nowrap dark:text-white" >
+              <div class="flex flex-col">
+                <span class="text-xl text-multisender-text-dark">{{summaryTransaction.tokenBalance}} {{summaryTransaction.tokenSymbol}}</span>
+                <span class="text-sm text-multisender-text-dark">Your token balance</span>
+              </div>
+            </td>
+          </tr>
+          <tr class="bg-white">
+            <td class="py-4 px-6 text-md font-normal text-gray-900 whitespace-nowrap dark:text-white" >
+              <div class="flex flex-col">
+                <span class="text-xl text-multisender-text-dark">{{summaryTransaction.approximateCost}}</span>
+                <span class="text-sm text-multisender-text-dark">Approximate cost of operation</span>
+              </div>
+            </td>
+            <td class="py-4 px-6 text-md font-normal text-gray-900 whitespace-nowrap dark:text-white" >
+              <div class="flex flex-col">
+                <span class="text-xl text-multisender-text-dark">{{summaryTransaction.bnbBalance}}</span>
+                <span class="text-sm text-multisender-text-dark">Your BNB balance</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </div>
+  </ng-container>
   <div class="nav-container">
     <button *ngIf="step > 1" type="button" class="btn-nav" (click)="navigateStep(step-1)">Previous</button>
     <button *ngIf="preparationData.valid && !isInsufficientBalance && receiverValidData.length > 0" type="submit" class="btn-nav" (click)="navigateStep(step+1)">Next</button>

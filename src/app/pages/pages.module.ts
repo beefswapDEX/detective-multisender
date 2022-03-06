@@ -13,6 +13,8 @@ import { FooterComponent } from '../components/footer/footer.component';
 import { TokenMultisenderComponent } from '../views/token-multisender/token-multisender.component';
 import { NftMultisenderComponent } from '../views/nft-multisender/nft-multisender.component';
 import { SharedModule } from '../shared/shared.module';
+import { Web3Service } from '../shared/services/web3-service/web3.service';
+import { TokenService } from '../shared/services/token-service/token.service';
 
 @NgModule({
   declarations: [
@@ -30,6 +32,10 @@ import { SharedModule } from '../shared/shared.module';
     ReactiveFormsModule,
     SharedModule,
     CodemirrorModule
+  ],
+  providers: [
+    Web3Service,
+    TokenService
   ]
 })
 export class PagesModule { }
