@@ -4,6 +4,8 @@ import { select, Store } from '@ngrx/store';
 import { AbiItem } from 'web3-utils'
 import erc20Abi from 'src/app/config/abi/erc20.json';
 import detectiveMultisenderAbi from 'src/app/config/abi/detectiveMultisender.json';
+import upgradeableProxySender from 'src/app/config/abi/upgradeableProxySender.json';
+import EternalStorageProxyForDetectiveMultisender from 'src/app/config/abi/EternalStorageProxyForDetectiveMultisender.json';
 import keys from 'src/app/config/constants/keys';
 import { selectFeatureAddress, selectFeatureChain } from 'src/app/store/web3store/web3.reducer';
 import { BIG_ZERO } from 'src/app/utils/bigNumber';
@@ -14,6 +16,10 @@ import BN from 'bignumber.js';
 import contract from 'src/app/config/constants/contracts';
 
 declare let window: any;
+interface ReceiverWithAmount {
+  address: string,
+  amount: number 
+}
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +38,9 @@ export class TokenService {
   ethBalance: any;
   defAccTokenBalance: any;
   addressValidData = [];
+  totalBalance;
+  addressToSend = [];
+  balanceToSend = [];
 
   constructor(
     private readonly localStorage: LocalStorageService,
@@ -121,10 +130,25 @@ export class TokenService {
     return new BN(10).pow(decimals)
   }
 
+  get totalBalanceWithDecimals() {
+    return new BN(this.totalBalance).times(this.multiplier).toString(10)
+  }
+
+  parseAddress(data: ReceiverWithAmount[]) {
+    this.addressToSend = [];
+    this.balanceToSend = [];
+    this.totalBalance = 0;
+    data.forEach((val: ReceiverWithAmount) => {
+      this.addressToSend.push(val.address)
+      var test = new BN(val.amount * (Math.pow(10, this.decimals)))
+      this.balanceToSend.push(test)
+    })
+  }
+
   async getAllowance(tokenAddress: string): Promise<any> {
     try {
       const token = new this.web3.eth.Contract(erc20Abi as AbiItem[], tokenAddress);
-      const allowance = await token.methods.allowance(this.account, contract.externalStorageProxyForDetectiveMultisender[this.chainId]).call();
+      const allowance = await token.methods.allowance(this.account, contract.upgradeableProxySender[this.chainId]).call();
       this.allowance = new BN(allowance).div(this.multiplier).toString(10)
       return this.allowance
     }
@@ -137,9 +161,10 @@ export class TokenService {
 
   async getCurrentFee(): Promise<any> {
     try {
-      const multisender = new this.web3.eth.Contract(detectiveMultisenderAbi as AbiItem[], contract.externalStorageProxyForDetectiveMultisender[this.chainId]);
+      const multisender = new this.web3.eth.Contract(upgradeableProxySender as AbiItem[], contract.upgradeableProxySender[this.chainId]);
       const currentFee = await multisender.methods.currentFee(this.account).call();
       this.currentFee = this.web3.utils.fromWei(currentFee)
+      console.log('currentFee', currentFee);
       return this.currentFee
     }
     catch(e){
@@ -149,7 +174,7 @@ export class TokenService {
 
   async getArrayLimit(): Promise<any> {
     try {
-      const multisender = new this.web3.eth.Contract(detectiveMultisenderAbi as AbiItem[], contract.detectiveMultisender[this.chainId]);
+      const multisender = new this.web3.eth.Contract(detectiveMultisenderAbi as AbiItem[], contract.upgradeableProxySender[this.chainId]);
       this.arrayLimit = await multisender.methods.arrayLimit().call();
       return this.arrayLimit
     }
@@ -167,19 +192,20 @@ export class TokenService {
       await this.getCurrentFee()
       this.getTokenSymbol(tokenAddress)
       this.getEthBalance()
-      this.getArrayLimit()
+      // this.getArrayLimit()
     } else {
       this.tokenAddress = tokenAddress;
       await this.getCurrentFee()
       await this.getEthBalance()
-      this.getArrayLimit()
+      // this.getArrayLimit()
       this.decimals = 18;
       this.defAccTokenBalance = this.ethBalance;
     }
   }
 
   public get totalNumberTx() {
-    return Math.ceil(this.addressValidData.length/this.arrayLimit);
+    return 1;
+    // return Math.ceil(this.addressValidData.length/this.arrayLimit);
   }
 
   public get totalCostInEth(){
