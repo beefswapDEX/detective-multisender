@@ -6,6 +6,7 @@ import { NetworkOptionModel, networkOptions } from 'src/app/config/constants/net
 import { UserTokenModel } from 'src/app/config/models/user-token.model';
 import { LocalStorageService } from 'src/app/shared/services/local-storage-service/local-storage.service';
 import { TokenService } from 'src/app/shared/services/token-service/token.service';
+import { TxService } from 'src/app/shared/services/tx-service/tx.service';
 import { Web3Service } from 'src/app/shared/services/web3-service/web3.service';
 import { CustomValidators } from 'src/app/shared/validators/custom-validators';
 import { BIG_ZERO } from 'src/app/utils/bigNumber';
@@ -34,7 +35,7 @@ interface SummaryTransaction {
 })
 export class TokenMultisenderComponent implements OnInit {
   @ViewChild("receiverInput") private receiverInput
-  step = 2;
+  step = 1;
   address: string | undefined;
   openDropdown: boolean = false
   preparationData: FormGroup
@@ -63,6 +64,7 @@ export class TokenMultisenderComponent implements OnInit {
   constructor(
         private readonly web3Service: Web3Service,
         private readonly tokenService: TokenService,
+        private readonly txService: TxService,
         private readonly localStorageService: LocalStorageService
     ) {
     this.preparationData = new FormGroup({
@@ -103,8 +105,11 @@ export class TokenMultisenderComponent implements OnInit {
     })
   }
 
-  navigateStep(step: number) {
+  async navigateStep(step: number) {
     if(step <= 3) {
+      if(step === 3 ) {
+        await this.txService.multisendToken()
+      }
       this.step = step;
     }
   }
@@ -168,6 +173,7 @@ export class TokenMultisenderComponent implements OnInit {
     }
     this.receiverValidData = addressDataWithAmount;
     this.receiverErrorData = errorData;
+    this.tokenService.parseAddress(this.receiverValidData)
     this.calculateCostAndBalance();
   }
 
@@ -178,7 +184,6 @@ export class TokenMultisenderComponent implements OnInit {
 
   calculateCostAndBalance() {
     var totalAmount: number = 0;
-    this.tokenService.addressValidData = this.receiverValidData;
     this.receiverValidData.forEach((value: any) => {
       totalAmount += value.amount
     })
