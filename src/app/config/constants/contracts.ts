@@ -7,8 +7,8 @@ export default {
     97: '0xB0764Da8FA1801dcaa57512A45Da6E213775D3DA',
     56: '0xB0764Da8FA1801dcaa57512A45Da6E213775D3DA'
   },
-  // eternalProxyForStormMultisender: {
-  //   97: '0xa5025faba6e70b84f74e9b1113e5f7f4e7f4859f',
-  //   56: '0xa5025faba6e70b84f74e9b1113e5f7f4e7f4859f'
+  // UpgradebleDetectiveSender: {
+  //   97: '0x317DBc8883b4FD987ae9619eC96302E543F195c2',
+  //   56: '0x317DBc8883b4FD987ae9619eC96302E543F195c2'
   // }
 }
