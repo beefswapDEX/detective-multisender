@@ -3,9 +3,7 @@ import { Injectable } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { AbiItem } from 'web3-utils'
 import erc20Abi from 'src/app/config/abi/erc20.json';
-import detectiveMultisenderAbi from 'src/app/config/abi/detectiveMultisender.json';
-import upgradeableProxySender from 'src/app/config/abi/upgradeableProxySender.json';
-import EternalStorageProxyForDetectiveMultisender from 'src/app/config/abi/EternalStorageProxyForDetectiveMultisender.json';
+import UpgradeableDetectiveSender from 'src/app/config/abi/UpgradeableDetectiveSender.json'
 import keys from 'src/app/config/constants/keys';
 import { selectFeatureAddress, selectFeatureChain } from 'src/app/store/web3store/web3.reducer';
 import { BIG_ZERO } from 'src/app/utils/bigNumber';
@@ -14,6 +12,7 @@ import Web3 from 'web3';
 import { LocalStorageService } from '../local-storage-service/local-storage.service';
 import BN from 'bignumber.js';
 import contract from 'src/app/config/constants/contracts';
+import { GasPriceService } from '../gas-service/gas-price.service';
 
 declare let window: any;
 interface ReceiverWithAmount {
@@ -38,12 +37,13 @@ export class TokenService {
   ethBalance: any;
   defAccTokenBalance: any;
   addressValidData = [];
-  totalBalance;
+  totalBalance = BIG_ZERO;
   addressToSend = [];
   balanceToSend = [];
 
   constructor(
     private readonly localStorage: LocalStorageService,
+    private readonly gasPriceService: GasPriceService,
     private readonly httpClient: HttpClient,
     private addressStore: Store<{address: string}>,
     private chainStore: Store<{chainId: string}>
@@ -137,18 +137,21 @@ export class TokenService {
   parseAddress(data: ReceiverWithAmount[]) {
     this.addressToSend = [];
     this.balanceToSend = [];
-    this.totalBalance = 0;
+    var totalBalance = 0;
     data.forEach((val: ReceiverWithAmount) => {
       this.addressToSend.push(val.address)
+      totalBalance += val.amount;
       var test = new BN(val.amount * (Math.pow(10, this.decimals)))
       this.balanceToSend.push(test)
     })
+    this.totalBalance = new BN(totalBalance * (Math.pow(10, this.decimals)));
+    console.log('totalBalance to approve ', this.totalBalance);
   }
 
   async getAllowance(tokenAddress: string): Promise<any> {
     try {
       const token = new this.web3.eth.Contract(erc20Abi as AbiItem[], tokenAddress);
-      const allowance = await token.methods.allowance(this.account, contract.upgradeableProxySender[this.chainId]).call();
+      const allowance = await token.methods.allowance(this.account, contract.EternalStorageProxyForDetectiveMultisender[this.chainId]).call();
       this.allowance = new BN(allowance).div(this.multiplier).toString(10)
       return this.allowance
     }
@@ -161,7 +164,7 @@ export class TokenService {
 
   async getCurrentFee(): Promise<any> {
     try {
-      const multisender = new this.web3.eth.Contract(upgradeableProxySender as AbiItem[], contract.upgradeableProxySender[this.chainId]);
+      const multisender = new this.web3.eth.Contract(UpgradeableDetectiveSender as AbiItem[], contract.EternalStorageProxyForDetectiveMultisender[this.chainId]);
       const currentFee = await multisender.methods.currentFee(this.account).call();
       this.currentFee = this.web3.utils.fromWei(currentFee)
       console.log('currentFee', currentFee);
@@ -174,7 +177,7 @@ export class TokenService {
 
   async getArrayLimit(): Promise<any> {
     try {
-      const multisender = new this.web3.eth.Contract(detectiveMultisenderAbi as AbiItem[], contract.upgradeableProxySender[this.chainId]);
+      const multisender = new this.web3.eth.Contract(UpgradeableDetectiveSender as AbiItem[], contract.EternalStorageProxyForDetectiveMultisender[this.chainId]);
       this.arrayLimit = await multisender.methods.arrayLimit().call();
       return this.arrayLimit
     }
@@ -192,7 +195,7 @@ export class TokenService {
       await this.getCurrentFee()
       this.getTokenSymbol(tokenAddress)
       this.getEthBalance()
-      // this.getArrayLimit()
+      this.getArrayLimit()
     } else {
       this.tokenAddress = tokenAddress;
       await this.getCurrentFee()
@@ -209,8 +212,8 @@ export class TokenService {
   }
 
   public get totalCostInEth(){
-    const standardGasPrice = this.web3.utils.toWei('23.0', 'gwei');
-    const currentFeeInWei = this.web3.utils.toWei('22');
+    const standardGasPrice = this.web3.utils.toWei('21', 'gwei');
+    const currentFeeInWei = this.web3.utils.toWei(this.currentFee);
     const tx = new BN(standardGasPrice).times(new BN('5000000'))
     const txFeeMiners = tx.times(new BN(this.totalNumberTx))
     const contractFee = new BN(currentFeeInWei).times(this.totalNumberTx);

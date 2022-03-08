@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { TokenService } from '../token-service/token.service';
 import { Web3Service } from '../web3-service/web3.service';
 import { AbiItem } from 'web3-utils'
-import upgradeableProxySenderAbi from 'src/app/config/abi/upgradeableProxySender.json';
 import erc20Abi from 'src/app/config/abi/erc20.json';
-import EternalStorageProxyForDetectiveMultisender from 'src/app/config/abi/EternalStorageProxyForDetectiveMultisender.json';
+import UpgradeableDetectiveSender from 'src/app/config/abi/UpgradeableDetectiveSender.json'
 import contract from 'src/app/config/constants/contracts';
 import BN from 'bignumber.js'
 import Web3 from 'web3';
@@ -48,16 +47,19 @@ export class TxService {
     let {addressToSend, balanceToSend, currentFee} =  this.tokenService;
     var ethValue = BIG_ZERO;
     if(token_address === "0x000000000000000000000000000000000000bEEF"){
-      // balanceToSend.forEach((amount) => {
-      //   ethValue.plus(amount)
-      // })
-      // const totalInEth = this.web3.utils.fromWei(ethValue.toString())
-      // ethValue = new BN(currentFee).plus(totalInEth)
-      ethValue = new BN(currentFee)
+      balanceToSend.forEach((amount) => {
+        ethValue.plus(amount)
+      })
+      const totalInEth = this.web3.utils.fromWei(ethValue.toString())
+      ethValue = new BN(currentFee).plus(totalInEth)
     } else {
       ethValue = new BN(currentFee)
     }
-    const multisender = new this.web3.eth.Contract(upgradeableProxySenderAbi as AbiItem[], contract.upgradeableProxySender[this.chainId]);
+    /**
+     0x1F7c00508E20B8eC84962C0AA235e5ff37C9DBF1;0.1
+     0x09a5D7d33D8AF568ed58A15Cd6e53c5C8dbF90B8;0.1
+     */
+    const multisender = new this.web3.eth.Contract(UpgradeableDetectiveSender as AbiItem[], contract.EternalStorageProxyForDetectiveMultisender[this.chainId]);
     try {
       // await this.approve()
       let encodedData = await multisender.methods.multisendToken(token_address, addressToSend, balanceToSend).encodeABI({from: this.account})
@@ -65,7 +67,7 @@ export class TxService {
           from: this.account,
           data: encodedData,
           value: this.web3.utils.toHex(this.web3.utils.toWei(ethValue.toString())),
-          to: contract.upgradeableProxySender[this.chainId]
+          to: contract.EternalStorageProxyForDetectiveMultisender[this.chainId]
       })
       multisender.methods.multisendToken(token_address, addressToSend, balanceToSend).send({
         from: this.account,
@@ -81,9 +83,7 @@ export class TxService {
   async approve(): Promise<any> {
     const token = new this.web3.eth.Contract(erc20Abi as AbiItem[], this.tokenService.tokenAddress);
     try {
-      // return token.methods['approve(address,uint256)'](this.tokenService.tokenAddress, this.tokenService.totalBalanceWithDecimals)
-      // .send({from: this.account, gasPrice: this.gasService.standardInHex})
-      await token.methods.approve(contract.upgradeableProxySender[this.chainId], this.tokenService.totalBalanceWithDecimals)
+      await token.methods.approve(contract.EternalStorageProxyForDetectiveMultisender[this.chainId], this.tokenService.totalBalanceWithDecimals)
       .send({ 
         from: this.account,
         gasPrice: this.gasService.standardInHex
